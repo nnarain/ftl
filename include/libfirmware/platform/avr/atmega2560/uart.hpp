@@ -1,65 +1,25 @@
+//
+// platform/avr/atmega2560/uart.hpp
+//
+// @author Natesh Narain <nnaraindev@gmail.com>
+// @date Oct 31 2020
+//
 
+#ifndef LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_UART_HPP
+#define LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_UART_HPP
 
-#ifndef LIBFIRMWARE_PLATFORM_ATMEGA2560_HPP
-#define LIBFIRMWARE_PLATFORM_ATMEGA2560_HPP
-
-#include <avr/io.h>
-#include <stdint.h>
-
-#include <libfirmware/utils/bitutil.hpp>
 #include <libfirmware/comms/uart.hpp>
+#include <libfirmware/utils/bitutil.hpp>
+#include <libfirmware/platform/avr/utils/setbaud.hpp>
 
-#include <libfirmware/platform/avr/setbaud.hpp>
-
+namespace libfirmware
+{
+namespace platform
+{
+namespace avr
+{
 namespace atmega2560
 {
-
-template<uint16_t GPIO_BASE_ADDR>
-struct HardwareGpio
-{
-    static constexpr uint16_t INPUT_ADDR = GPIO_BASE_ADDR;
-    static constexpr uint16_t DDR_ADDR = GPIO_BASE_ADDR + 1;
-    static constexpr uint16_t OUTPUT_ADDR = GPIO_BASE_ADDR + 2;
-
-    template<uint8_t PIN>
-    struct OutputPin
-    {
-        OutputPin()
-        {
-            SET_BIT(_SFR_IO8(DDR_ADDR), PIN);
-        }
-
-        void set()
-        {
-            SET_BIT(_SFR_IO8(OUTPUT_ADDR), PIN);
-        }
-
-        void reset()
-        {
-            CLR_BIT(_SFR_IO8(OUTPUT_ADDR), PIN);
-        }
-
-        void toggle()
-        {
-            TGL_BIT(_SFR_IO8(OUTPUT_ADDR), PIN);
-        }
-    };
-
-    template<uint8_t PIN>
-    struct InputPin
-    {
-        InputPin()
-        {
-            CLR_BIT(_SFR_IO8(DDR_ADDR), PIN);
-        }
-
-        bool read() const
-        {
-            return IS_BIT_SET(_SFR_IO8(INPUT_ADDR), PIN);
-        }
-    };
-};
-
 using Baud = libfirmware::comms::uart::BaudRate;
 
 template<uint16_t Addr>
@@ -132,22 +92,9 @@ struct HardwareUart
             write(*s++);
     }
 };
-
-struct Hardware
-{
-    /* General Purpose IO */
-    using GpioA = HardwareGpio<0x00>;
-    using GpioB = HardwareGpio<0x03>;
-
-    /* UART */
-    using Uart0 = HardwareUart<0xC0>;
-    using Uart1 = HardwareUart<0xC8>;
-    using Uart2 = HardwareUart<0xD0>;
-    using Uart3 = HardwareUart<0x130>;
-
-    /* I2C / 2-Wire */
-};
-
 }
+}
+}
+} // namespace libfirmware
 
 #endif
