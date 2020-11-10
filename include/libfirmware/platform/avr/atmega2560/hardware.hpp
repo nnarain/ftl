@@ -10,7 +10,8 @@
 
 #include "gpio.hpp"
 #include "uart.hpp"
-#include "i2c.hpp"
+
+#include <libfirmware/platform/avr/interfaces/i2c.hpp>
 
 namespace libfirmware
 {

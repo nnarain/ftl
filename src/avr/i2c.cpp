@@ -49,7 +49,7 @@ namespace i2c
         // TODO(nnarain): Prescaler config
 
         // Calculate I2C baud rate
-        const auto scl_freq = static_cast<uint32_t>(clock);
+        const auto scl_freq = static_cast<unsigned long>(clock);
         TWBR = ((F_CPU / scl_freq) - 16) / 2;
 
         TWCR = BV(TWEN);
@@ -61,19 +61,17 @@ namespace i2c
         // I2C_ENABLE_ISR();
     }
 
-    // void slarw(uint8_t addr, SlaMode mode)
-    // {
-    //     // Slave addresses can only be even numbers (no bit 0)
-    //     // OR in the Read/Write mode
-    //     write((addr << 1) | static_cast<uint8_t>(mode));
-    // }
-
-    uint8_t start(uint8_t address, SlaMode mode)
+    void start()
     {
         // Send start condition
         // Clear interrupt, I2C enable and start flag
         TWCR = I2C_ACTION_TRIGGER | BV(TWSTA);
         I2C_ACTION_WAIT();
+    }
+
+    uint8_t begin(uint8_t address, SlaMode mode)
+    {
+        start();
 
         uint8_t status = TW_STATUS;
 
@@ -98,6 +96,11 @@ namespace i2c
         }
 
         return 0;
+    }
+
+    void end()
+    {
+        stop();
     }
 
     void stop()

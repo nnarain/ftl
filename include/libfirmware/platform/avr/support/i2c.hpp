@@ -5,6 +5,9 @@
 // @date Nov 02 2020
 //
 
+#ifndef LIBFIRMWARE_PLATFORM_AVR_SUPPORT_I2C_HPP
+#define LIBFIRMWARE_PLATFORM_AVR_SUPPORT_I2C_HPP
+
 #include <libfirmware/comms/i2c.hpp>
 
 #include <stdint.h>
@@ -26,25 +29,26 @@ namespace i2c
 
     };
 
-    // TODO: I2C device detection (start, send addr, recv ACK, end)
-    // TODO: Handle bus states after each action
-
     /**
      * Initialize I2C
     */
     void init(ClockMode clock = ClockMode::Normal);
     /**
-     * Send a START condition
+     * Start I2C transaction
     */
-    uint8_t start(uint8_t address, SlaMode rw);
+    uint8_t begin(uint8_t address, SlaMode rw);
+    /**
+     * End I2C transaction
+    */
+    void end();
+    /**
+     * Send START condition
+    */
+    void start();
     /**
      * Send a STOP condition
     */
     void stop();
-    /**
-     * Send the slave address and read/write mode on the bus
-    */
-    // void slarw(uint8_t addr, uint8_t rw);
     /**
      * Write a byte to the bus
     */
@@ -70,3 +74,5 @@ namespace i2c
 }
 }
 } // namespace libfirmware
+
+#endif

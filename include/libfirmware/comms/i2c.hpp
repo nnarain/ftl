@@ -14,10 +14,10 @@ namespace comms
 {
 namespace i2c
 {
-    enum class ClockMode: long
+    enum class ClockMode: unsigned long
     {
-        Normal = 100000L,
-        Fast = 400000L,
+        Normal = 100000UL,
+        Fast = 400000UL,
     };
 
     enum class SlaMode
