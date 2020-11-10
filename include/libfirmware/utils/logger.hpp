@@ -12,12 +12,24 @@
 #include <string.h>
 #include <stdio.h>
 
+#define LOG_DEBUG(msg, ...) libfirmware::utils::SystemLogger::instance().getLogger()->log("[DEBUG] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_INFO(msg, ...)  libfirmware::utils::SystemLogger::instance().getLogger()->log("[INFO ] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_WARN(msg, ...)  libfirmware::utils::SystemLogger::instance().getLogger()->log("[WARN ] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_ERROR(msg, ...) libfirmware::utils::SystemLogger::instance().getLogger()->log("[ERROR] " msg "\n\r", ##__VA_ARGS__)
+
+
 namespace libfirmware
 {
 namespace utils
 {
+    class LoggerBase
+    {
+    public:
+        virtual void log(const char* fmt, ...) = 0;
+    };
+
     template<typename ByteStreamT, unsigned long L = 256>
-    class Logger
+    class Logger : public LoggerBase
     {
     public:
         template<typename... Args>
@@ -26,7 +38,7 @@ namespace utils
         {
         }
 
-        void log(const char* fmt, ...)
+        void log(const char* fmt, ...) override
         {
             va_list args;
 
@@ -44,6 +56,58 @@ namespace utils
 
     private:
         ByteStreamT stream_;
+    };
+
+    // TODO remove?
+    class NoopLogger : public LoggerBase
+    {
+    public:
+        void log(const char* fmt, ...) override
+        {
+        }
+
+        static NoopLogger& instance()
+        {
+            static NoopLogger logger;
+            return logger;
+        }
+    };
+
+    class SystemLogger
+    {
+    public:
+        SystemLogger()
+            : logger_{&NoopLogger::instance()}
+        {
+        }
+
+        void setLogger(LoggerBase* const logger)
+        {
+            if (logger != nullptr)
+            {
+                logger_ = logger;
+            }
+        }
+
+        LoggerBase* getLogger()
+        {
+            return logger_;
+        }
+
+        template<typename LoggerT, typename... Args>
+        static void initialize(Args... args)
+        {
+            // SystemLogger::instance().setLogger(new LoggerT{args...});
+        }
+
+        static SystemLogger& instance()
+        {
+            static SystemLogger logger;
+            return logger;
+        }
+
+    private:
+        LoggerBase* logger_;
     };
 }
 }

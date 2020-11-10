@@ -10,7 +10,7 @@
 #define BIT_UTIL_H
 
 //! Bit value
-#define BV(b) (1 << b)
+#define BV(b) (1 << (b))
 
 //! set mask y in x
 #define SET(x, y) ((x) |= (y))

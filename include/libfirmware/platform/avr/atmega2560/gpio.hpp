@@ -9,6 +9,8 @@
 
 #include <stdint.h>
 
+#include <libfirmware/utils/bitutil.hpp>
+
 namespace libfirmware
 {
 namespace platform
