@@ -44,6 +44,17 @@ namespace i2c
             i2c_.end();
         }
 
+        void write1(uint8_t first, const uint8_t* data, unsigned int len)
+        {
+            i2c_.begin(address_, SlaMode::Write);
+            i2c_.write(first);
+            while(len--)
+            {
+                i2c_.write(*data++);
+            }
+            i2c_.end();
+        }
+
         void read(uint8_t* const data, unsigned long len)
         {
             i2c_.begin(address_, SlaMode::Read);
@@ -51,8 +62,6 @@ namespace i2c
             {
                 data[i] = i2c_.read(i < len - 1);
             }
-            // data[0] = i2c_.read(true);
-            // data[1] = i2c_.read(false);
             i2c_.end();
         }
 

@@ -1,7 +1,7 @@
 
 /**
 *
-*	Collection of nifty bit twiddlely macros
+*	Collection of bitwise macros
 *
 *	\author Natesh Narain
 */
