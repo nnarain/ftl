@@ -4,14 +4,14 @@
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Oct 31 2020
 //
-#ifndef LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
-#define LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
+#ifndef FTL_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
+#define FTL_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
 
 #include <stdint.h>
 
-#include <libfirmware/utils/bitutil.hpp>
+#include <ftl/utils/bitutil.hpp>
 
-namespace libfirmware
+namespace ftl
 {
 namespace platform
 {
@@ -67,6 +67,6 @@ namespace atmega2560
 }
 }
 }
-} // namespace libfirmware
+} // namespace ftl
 
-#endif // LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
+#endif // FTL_PLATFORM_AVR_ATMEGA2560_GPIO_HPP

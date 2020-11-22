@@ -4,12 +4,12 @@
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Nov 08 2020
 //
-#ifndef LIBFIRMWARE_COMMS_DRIVERS_DISPLAY_HPP
-#define LIBFIRMWARE_COMMS_DRIVERS_DISPLAY_HPP
+#ifndef FTL_COMMS_DRIVERS_DISPLAY_HPP
+#define FTL_COMMS_DRIVERS_DISPLAY_HPP
 
 #include <stdint.h>
 
-namespace libfirmware
+namespace ftl
 {
 namespace drivers
 {

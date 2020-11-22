@@ -4,14 +4,14 @@
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Nov 09 2020
 //
-#ifndef LIBFIRMWARE_COMMS_I2C_I2C_REGISTER_HPP
-#define LIBFIRMWARE_COMMS_I2C_I2C_REGISTER_HPP
+#ifndef FTL_COMMS_I2C_I2C_REGISTER_HPP
+#define FTL_COMMS_I2C_I2C_REGISTER_HPP
 
 #include <stdint.h>
 
 #include "i2c_device.hpp"
 
-namespace libfirmware
+namespace ftl
 {
 namespace comms
 {

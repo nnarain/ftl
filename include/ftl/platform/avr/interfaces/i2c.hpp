@@ -4,13 +4,13 @@
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Oct 31 2020
 //
-#ifndef LIBFIRMWARE_PLATFORM_AVR_I2C_HPP
-#define LIBFIRMWARE_PLATFORM_AVR_I2C_HPP
+#ifndef FTL_PLATFORM_AVR_I2C_HPP
+#define FTL_PLATFORM_AVR_I2C_HPP
 
-#include <libfirmware/comms/i2c.hpp>
-#include <libfirmware/platform/avr/support/i2c.hpp>
+#include <ftl/comms/i2c.hpp>
+#include <ftl/platform/avr/support/i2c.hpp>
 
-namespace libfirmware
+namespace ftl
 {
 namespace platform
 {
@@ -78,6 +78,6 @@ namespace avr
     };
 }
 }
-} // namespace libfirmware
+} // namespace ftl
 
-#endif // LIBFIRMWARE_PLATFORM_AVR_I2C_HPP
+#endif // FTL_PLATFORM_AVR_I2C_HPP

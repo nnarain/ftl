@@ -5,15 +5,15 @@
 // @date Oct 31 2020
 //
 
-#ifndef LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_HARDWARE_HPP
-#define LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_HARDWARE_HPP
+#ifndef FTL_PLATFORM_AVR_ATMEGA2560_HARDWARE_HPP
+#define FTL_PLATFORM_AVR_ATMEGA2560_HARDWARE_HPP
 
 #include "gpio.hpp"
 #include "uart.hpp"
 
-#include <libfirmware/platform/avr/interfaces/i2c.hpp>
+#include <ftl/platform/avr/interfaces/i2c.hpp>
 
-namespace libfirmware
+namespace ftl
 {
 namespace platform
 {
@@ -44,7 +44,7 @@ namespace atmega2560
 }
 }
 }
-} // namespace libfirmware
+} // namespace ftl
 
 
-#endif // LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_HARDWARE_HPP
+#endif // FTL_PLATFORM_AVR_ATMEGA2560_HARDWARE_HPP

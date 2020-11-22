@@ -5,14 +5,14 @@
 // @date Nov 02 2020
 //
 
-#ifndef LIBFIRMWARE_PLATFORM_AVR_SUPPORT_I2C_HPP
-#define LIBFIRMWARE_PLATFORM_AVR_SUPPORT_I2C_HPP
+#ifndef FTL_PLATFORM_AVR_SUPPORT_I2C_HPP
+#define FTL_PLATFORM_AVR_SUPPORT_I2C_HPP
 
-#include <libfirmware/comms/i2c.hpp>
+#include <ftl/comms/i2c.hpp>
 
 #include <stdint.h>
 
-namespace libfirmware
+namespace ftl
 {
 namespace platform
 {
@@ -73,6 +73,6 @@ namespace i2c
 }
 }
 }
-} // namespace libfirmware
+} // namespace ftl
 
 #endif
