@@ -9,6 +9,8 @@
 
 #include <stdint.h>
 
+#include <ftl/comms/i2c/i2c_device.hpp>
+
 namespace ftl
 {
 namespace drivers
@@ -29,6 +31,7 @@ namespace displays
  *      - Logic 0: The following byte is a command
  *      - Logic 1: The following byte is data for GDDRAM
 */
+template<class I2C>
 class Ssd1306
 {
     static constexpr uint8_t CONTROL_COMMAND = 0x00;
@@ -89,17 +92,17 @@ public:
     };
 
     Ssd1306(uint8_t address)
-        : address_{address}
+        : device_{address}
     {
     }
 
-    bool detect()
-    {
-        const auto status = i2c::start(address_, i2c::SlaMode::Write);
-        i2c::stop();
+    // bool detect()
+    // {
+    //     const auto status = i2c::start(address_, i2c::SlaMode::Write);
+    //     i2c::stop();
 
-        return status == 0;
-    }
+    //     return status == 0;
+    // }
 
     void enable(bool on)
     {
@@ -213,8 +216,7 @@ private:
         // i2c::stop();
     }
 
-    // I2C device address
-    uint8_t address_;
+    ftl::comms::i2c::I2CDevice<I2C> device_;
 };
 
 }

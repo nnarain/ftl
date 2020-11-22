@@ -17,6 +17,7 @@
 
 #include <ftl/drivers/displays/ssd1306.hpp>
 
+#define OLED_ADDRESS 0x3C
 
 using namespace ftl::drivers;
 using namespace ftl::utils;
@@ -30,6 +31,19 @@ int main()
     // Arduino Mega - Pullup SDA, SCL
     Hardware::GpioD::OutputPin<0> scl_pullup;
     Hardware::GpioD::OutputPin<1> sda_pullup;
+
+    // displays::Ssd1306<Hardware::I2C> oled{OLED_ADDRESS};
+    ftl::comms::i2c::I2CDevice<Hardware::I2C> oled{OLED_ADDRESS};
+
+    for(;;)
+    {
+        if (oled.detect())
+        {
+            LOG_INFO("Detected the OLED display!");
+        }
+
+        _delay_ms(1000);
+    }
 
     return 0;
 }

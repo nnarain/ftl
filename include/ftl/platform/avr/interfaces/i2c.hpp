@@ -24,7 +24,7 @@ namespace avr
         }
 
         /**
-         * 
+         * Initialize the I2C interface
         */
         static void initialize(comms::i2c::ClockMode clock = comms::i2c::ClockMode::Normal)
         {
@@ -32,7 +32,7 @@ namespace avr
         }
 
         /**
-         *
+         * Begin the I2C transaction
         */
         void begin(uint8_t address, comms::i2c::SlaMode mode)
         {
@@ -74,6 +74,14 @@ namespace avr
         uint8_t read(bool ack)
         {
             return i2c::read(ack);
+        }
+
+        /**
+         * Get I2C bus status
+        */
+        comms::i2c::State status() const
+        {
+            return i2c::status();
         }
     };
 }

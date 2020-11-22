@@ -26,10 +26,26 @@ namespace i2c
         Read = 1,
     };
 
+    // Possible I2C bus states
     enum class State
     {
-        Ok,
-        BusError,
+        // I2C Bus is ready
+        Ready,
+        // START condition sent
+        Start,
+        // REPEATED START condition sent (a second start without a stop)
+        RepeatedStart,
+        // Master transmitter mode, slave address ack
+        MT_SlaveAck,
+        // Master transmitter mode, slave address nack
+        MT_SlaveNAck,
+        // Master transmitter, data ack
+        MT_DataAck,
+        // Master transmitter, data nack
+        MT_DataNAck,
+        // Master transmitter, arbitration lost
+        MT_ArbitrationLost,
+        // TODO: Master Receiver modes
     };
 }
 }

@@ -29,6 +29,43 @@ namespace i2c
         {
         }
 
+        /**
+         * Attempt to gain control of bus, and if that succeeds send SLA+RW.
+         * 
+         * Returns true on success, false otherwise.
+        */
+        bool begin(SlaMode mode)
+        {
+            // Send a start condition
+            i2c_.start();
+
+            State state = i2c_.status();
+
+            // Confirm we are in the START or REPEATED-START states
+            if (state != State::Start && state != State::RepeatedStart)
+            {
+                return false;
+            }
+
+            // Send the device address + SLA mode on the I2C bus
+            i2c_.write((address_ << 1) | static_cast<uint8_t>(mode));
+
+            state = i2c_.status();
+
+            // Confirm that the I2C device responded with an ACK for the address
+            if (state != State::MT_SlaveAck)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        void end()
+        {
+            i2c_.stop();
+        }
+
         void write(const uint8_t data)
         {
             write(&data, 1);
@@ -36,33 +73,43 @@ namespace i2c
 
         void write(const uint8_t* data, unsigned int len)
         {
-            i2c_.begin(address_, SlaMode::Write);
+            begin(SlaMode::Write);
             while(len--)
             {
                 i2c_.write(*data++);
             }
-            i2c_.end();
+            end();
         }
 
         void write1(uint8_t first, const uint8_t* data, unsigned int len)
         {
-            i2c_.begin(address_, SlaMode::Write);
+            begin(SlaMode::Write);
             i2c_.write(first);
             while(len--)
             {
                 i2c_.write(*data++);
             }
-            i2c_.end();
+            end();
         }
 
         void read(uint8_t* const data, unsigned long len)
         {
-            i2c_.begin(address_, SlaMode::Read);
+            begin(SlaMode::Read);
             for (auto i = 0u; i < len; ++i)
             {
                 data[i] = i2c_.read(i < len - 1);
             }
-            i2c_.end();
+            end();
+        }
+
+        bool detect()
+        {
+            if (begin(SlaMode::Write))
+            {
+                end();
+                return true;
+            }
+            return false;
         }
 
     private:

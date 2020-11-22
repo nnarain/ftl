@@ -9,4 +9,6 @@ add_avr_executable(${PROJECT_NAME} "atmega2560"
     ${FTL_SOURCES}
 )
 
-target_link_libraries(${PROJECT_NAME}-atmega2560.elf ftl)
+target_include_directories(${PROJECT_NAME}-atmega2560.elf PUBLIC
+    ${FTL_INCLUDE_DIR}
+)
