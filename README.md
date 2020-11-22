@@ -1,3 +1,3 @@
-# libfirmware
+# FTL - Firmware Template Library
 
-Generic drivers and some concrete implementation.
+FTL is a template library for generic drivers, targeting embedded platforms.

@@ -5,14 +5,14 @@
 // @date Oct 31 2020
 //
 
-#ifndef LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_UART_HPP
-#define LIBFIRMWARE_PLATFORM_AVR_ATMEGA2560_UART_HPP
+#ifndef FTL_PLATFORM_AVR_ATMEGA2560_UART_HPP
+#define FTL_PLATFORM_AVR_ATMEGA2560_UART_HPP
 
-#include <libfirmware/comms/uart.hpp>
-#include <libfirmware/utils/bitutil.hpp>
-#include <libfirmware/platform/avr/utils/setbaud.hpp>
+#include <ftl/comms/uart.hpp>
+#include <ftl/utils/bitutil.hpp>
+#include <ftl/platform/avr/utils/setbaud.hpp>
 
-namespace libfirmware
+namespace ftl
 {
 namespace platform
 {
@@ -20,7 +20,7 @@ namespace avr
 {
 namespace atmega2560
 {
-using Baud = libfirmware::comms::uart::BaudRate;
+using Baud = ftl::comms::uart::BaudRate;
 
 template<uint16_t Addr>
 struct UsartRegisters
@@ -41,15 +41,15 @@ struct HardwareUart
 
     HardwareUart(Baud baud)
     {
-        libfirmware::platform::avr::BaudConfig uart_config;
+        ftl::platform::avr::BaudConfig uart_config;
 
         switch (baud)
         {
         case Baud::Rate_9600:
-            uart_config = libfirmware::platform::avr::configUart9600();
+            uart_config = ftl::platform::avr::configUart9600();
             break;
         case Baud::Rate_115200:
-            uart_config = libfirmware::platform::avr::configUart115200();
+            uart_config = ftl::platform::avr::configUart115200();
         default:
             break;
         }
@@ -95,6 +95,6 @@ struct HardwareUart
 }
 }
 }
-} // namespace libfirmware
+} // namespace ftl
 
 #endif

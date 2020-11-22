@@ -4,15 +4,15 @@
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Nov 08 2020
 //
-#ifndef LIBFIRMWARE_DRIVERS_SENSORS_MCP9600_HPP
-#define LIBFIRMWARE_DRIVERS_SENSORS_MCP9600_HPP
+#ifndef FTL_DRIVERS_SENSORS_MCP9600_HPP
+#define FTL_DRIVERS_SENSORS_MCP9600_HPP
 
-#include <libfirmware/comms/i2c/i2c_device.hpp>
-#include <libfirmware/comms/i2c/i2c_register.hpp>
+#include <ftl/comms/i2c/i2c_device.hpp>
+#include <ftl/comms/i2c/i2c_register.hpp>
 
-#include <libfirmware/utils/bitutil.hpp>
+#include <ftl/utils/bitutil.hpp>
 
-namespace libfirmware
+namespace ftl
 {
 namespace drivers
 {
@@ -358,4 +358,4 @@ private:
 }
 }
 
-#endif // LIBFIRMWARE_DRIVERS_SENSORS_MCP9600_HPP
+#endif // FTL_DRIVERS_SENSORS_MCP9600_HPP

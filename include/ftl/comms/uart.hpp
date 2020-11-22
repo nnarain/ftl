@@ -5,10 +5,10 @@
 // @date Oct 30 2020
 //
 
-#ifndef LIBFIRMWARE_COMMS_UART_HPP
-#define LIBFIRMWARE_COMMS_UART_HPP
+#ifndef FTL_COMMS_UART_HPP
+#define FTL_COMMS_UART_HPP
 
-namespace libfirmware
+namespace ftl
 {
 namespace comms
 {
@@ -35,4 +35,4 @@ namespace uart
 }
 }
 
-#endif // LIBFIRMWARE_COMMS_UART_HPP
+#endif // FTL_COMMS_UART_HPP

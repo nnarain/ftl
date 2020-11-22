@@ -6,8 +6,8 @@
 // @date Nov 02 2020
 //
 
-#include <libfirmware/platform/avr/support/i2c.hpp>
-#include <libfirmware/utils/bitutil.hpp>
+#include <ftl/platform/avr/support/i2c.hpp>
+#include <ftl/utils/bitutil.hpp>
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -32,7 +32,7 @@
 // TODO Remove
 #define SCL 100000UL
 
-namespace libfirmware
+namespace ftl
 {
 namespace platform
 {
@@ -220,7 +220,7 @@ namespace i2c
 }
 }
 }
-} // namespace libfirmware
+} // namespace ftl
 
 // I2C Interrupt Service Routine
 ISR(TWI_vect)

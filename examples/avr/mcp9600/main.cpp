@@ -11,17 +11,17 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <libfirmware/utils/logger.hpp>
-#include <libfirmware/comms/i2c/i2c_device.hpp>
-#include <libfirmware/platform/avr/atmega2560/hardware.hpp>
+#include <ftl/utils/logger.hpp>
+#include <ftl/comms/i2c/i2c_device.hpp>
+#include <ftl/platform/avr/atmega2560/hardware.hpp>
 
-#include <libfirmware/drivers/sensors/mcp9600.hpp>
+#include <ftl/drivers/sensors/mcp9600.hpp>
 
 #define MCP9600_ADDRESS 0x67
 
-using namespace libfirmware::drivers;
-using namespace libfirmware::utils;
-using namespace libfirmware::platform::avr::atmega2560;
+using namespace ftl::drivers;
+using namespace ftl::utils;
+using namespace ftl::platform::avr::atmega2560;
 
 int main()
 {

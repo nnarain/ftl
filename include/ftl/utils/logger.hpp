@@ -5,20 +5,20 @@
 // @date Oct 31 2020
 //
 
-#ifndef LIBFIRMWARE_UTILS_LOGGER_HPP
-#define LIBFIRMWARE_UTILS_LOGGER_HPP
+#ifndef FTL_UTILS_LOGGER_HPP
+#define FTL_UTILS_LOGGER_HPP
 
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 
-#define LOG_DEBUG(msg, ...) libfirmware::utils::SystemLogger::instance().getLogger()->log("[DEBUG] " msg "\n\r", ##__VA_ARGS__)
-#define LOG_INFO(msg, ...)  libfirmware::utils::SystemLogger::instance().getLogger()->log("[INFO ] " msg "\n\r", ##__VA_ARGS__)
-#define LOG_WARN(msg, ...)  libfirmware::utils::SystemLogger::instance().getLogger()->log("[WARN ] " msg "\n\r", ##__VA_ARGS__)
-#define LOG_ERROR(msg, ...) libfirmware::utils::SystemLogger::instance().getLogger()->log("[ERROR] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_DEBUG(msg, ...) ftl::utils::SystemLogger::instance().getLogger()->log("[DEBUG] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_INFO(msg, ...)  ftl::utils::SystemLogger::instance().getLogger()->log("[INFO ] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_WARN(msg, ...)  ftl::utils::SystemLogger::instance().getLogger()->log("[WARN ] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_ERROR(msg, ...) ftl::utils::SystemLogger::instance().getLogger()->log("[ERROR] " msg "\n\r", ##__VA_ARGS__)
 
 
-namespace libfirmware
+namespace ftl
 {
 namespace utils
 {

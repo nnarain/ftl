@@ -5,10 +5,10 @@
 // @date Nov 02 2020
 //
 
-#ifndef LIBFIRMWARE_COMMS_I2C_HPP
-#define LIBFIRMWARE_COMMS_I2C_HPP
+#ifndef FTL_COMMS_I2C_HPP
+#define FTL_COMMS_I2C_HPP
 
-namespace libfirmware
+namespace ftl
 {
 namespace comms
 {
@@ -35,4 +35,4 @@ namespace i2c
 }
 }
 
-#endif // LIBFIRMWARE_COMMS_I2C_HPP
+#endif // FTL_COMMS_I2C_HPP
