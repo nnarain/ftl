@@ -96,13 +96,10 @@ public:
     {
     }
 
-    // bool detect()
-    // {
-    //     const auto status = i2c::start(address_, i2c::SlaMode::Write);
-    //     i2c::stop();
-
-    //     return status == 0;
-    // }
+    bool detect()
+    {
+        return device_.detect();
+    }
 
     void enable(bool on)
     {

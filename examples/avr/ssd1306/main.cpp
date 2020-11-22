@@ -32,15 +32,15 @@ int main()
     Hardware::GpioD::OutputPin<0> scl_pullup;
     Hardware::GpioD::OutputPin<1> sda_pullup;
 
-    // displays::Ssd1306<Hardware::I2C> oled{OLED_ADDRESS};
-    ftl::comms::i2c::I2CDevice<Hardware::I2C> oled{OLED_ADDRESS};
+    displays::Ssd1306<Hardware::I2C> oled{OLED_ADDRESS};
+
+    if (oled.detect())
+    {
+        LOG_INFO("Configuring display...");
+    }
 
     for(;;)
     {
-        if (oled.detect())
-        {
-            LOG_INFO("Detected the OLED display!");
-        }
 
         _delay_ms(1000);
     }
