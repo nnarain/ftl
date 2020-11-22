@@ -12,11 +12,6 @@ set(FTL_SOURCES)
 
 set(FTL_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include")
 
-add_library(ftl INTERFACE)
-target_include_directories(ftl INTERFACE
-    ${CMAKE_CURRENT_LIST_DIR}/include
-)
-
 foreach(component ${ftl_FIND_COMPONENTS})
     # Include the components config script
     include(${CMAKE_CURRENT_LIST_DIR}/${component}-config.cmake)
