@@ -15,9 +15,9 @@
 #include <ftl/comms/i2c/i2c_device.hpp>
 #include <ftl/platform/avr/atmega2560/hardware.hpp>
 
-#include <ftl/drivers/sensors/mcp9600.hpp>
+#include <ftl/drivers/sensors/mcp9808.hpp>
 
-#define MCP9600_ADDRESS 0x67
+#define MCP9808_ADDRESS 0x18
 
 using namespace ftl::drivers;
 using namespace ftl::utils;
@@ -28,21 +28,26 @@ int main()
     Logger<Hardware::Uart0> logger{Baud::Rate_9600};
     SystemLogger::instance().setLogger(&logger);
 
-    // Arduino Mega - Pullup SDA, SCL
-    Hardware::GpioD::OutputPin<0> scl_pullup;
-    Hardware::GpioD::OutputPin<1> sda_pullup;
-
-    sda_pullup.set();
-    scl_pullup.set();
-
-    LOG_INFO("Initialize I2C");
-
     Hardware::I2C::initialize();
 
+    sensors::Mcp9808<Hardware::I2C> mcp{MCP9808_ADDRESS};
+
+    if (mcp.verify())
+    {
+        LOG_INFO("Sensor detected!");
+        mcp.enable(true);
+    }
+    else
+    {
+        LOG_INFO("Sensor not detected!!! Check wiring");
+        for(;;);
+    }
 
     for(;;)
     {
+        const auto temp = mcp.getAmbientTemperature();
 
+        LOG_INFO("Temperature: %0.2f", temp);
 
         _delay_ms(1000);
     }
