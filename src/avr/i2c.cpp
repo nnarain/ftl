@@ -170,6 +170,10 @@ namespace i2c
             return comms::i2c::State::MT_DataAck;
         case TW_MT_DATA_NACK:
             return comms::i2c::State::MT_DataNAck;
+        case TW_MR_SLA_ACK:
+            return comms::i2c::State::MR_SlaveAck;
+        case TW_MR_SLA_NACK:
+            return comms::i2c::State::MR_SlaveNAck;
         default:
             // FIXME: All I2C states
             return comms::i2c::State::Ready;

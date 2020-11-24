@@ -1,5 +1,5 @@
 //
-// MCP9600 driver for ATmega2560
+// MCP9808 driver for ATmega2560
 //
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Nov 21 2020

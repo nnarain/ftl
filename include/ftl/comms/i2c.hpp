@@ -46,6 +46,8 @@ namespace i2c
         // Master transmitter, arbitration lost
         MT_ArbitrationLost,
         // TODO: Master Receiver modes
+        MR_SlaveAck,
+        MR_SlaveNAck,
     };
 }
 }

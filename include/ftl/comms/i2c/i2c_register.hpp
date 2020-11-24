@@ -47,9 +47,9 @@ public:
     void read(uint8_t* const data)
     {
         // Write the register to read from
-        dev_.write(reg_);
+        dev_.sendByte(reg_);
         // Read the data from the register
-        dev_.read(data, LENGTH);
+        dev_.receiveBuffer(data, LENGTH);
     }
 
     template<typename T>
@@ -85,9 +85,10 @@ public:
     */
     void write(uint8_t* const data)
     {
-        // dev_.write(reg_);
-        // dev_.write(data, LENGTH);
-        dev_.write1(reg_, data, LENGTH);
+        dev_.begin(SlaMode::Write);
+        dev_.write(reg_);
+        dev_.write(data, LENGTH);
+        dev_.end();
     }
 
     template<typename T>
@@ -116,7 +117,9 @@ public:
 
     /**
      * Modify a portion of bits in the register
-     * \param new_value New value to 
+     * \param new_value New bit values
+     * \param mask The bit mask
+     * \param shift The number of bits to shift
     */
     template<typename T>
     void writeBits(T new_value, T mask, uint8_t shift)
