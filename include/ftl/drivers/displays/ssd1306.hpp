@@ -25,7 +25,7 @@ namespace displays
  * |SLA+RW|Co:D/C#:000000|Data|Co:D/C#:0..0|...
  * 
  * Co   - continuation bit
- *      - If set to logic 0, transmission of the following information will container data bytes only
+ *      - If set to logic 0, transmission of the following information will contain data bytes only
  * D/C# - Data / Command selection bit
  *      - Determines if the next byte acts as a command or as data
  *      - Logic 0: The following byte is a command
@@ -81,6 +81,8 @@ class Ssd1306
     // NOP
     static constexpr uint8_t COMMAND_NOP = 0xE3;
 
+    // Charge Pump
+    static constexpr uint8_t COMMAND_CHARGE_PUMP = 0x8D;
 
 public:
     // Memory Addressing Mode
@@ -94,6 +96,29 @@ public:
     Ssd1306(uint8_t address)
         : device_{address}
     {
+    }
+
+    bool initialize()
+    {
+        if (!device_.detect())
+        {
+            // Failed to detect
+            return false;
+        }
+
+        enable(false);
+        setDisplayOffset(0);
+        setDisplayStartLine(0);
+        setSegmentRemap(true);
+        setComScanReverse(false);
+        setComConfig(2);
+        setConstrast(0x7F);
+        setClockConfig(0x00, 0x08);
+        enableChargePump(true);
+        enable(true);
+        resume();
+
+        return true;
     }
 
     bool detect()
@@ -153,20 +178,38 @@ public:
         sendCommand(COMMAND_SET_PAGE_START_ADDRESS | static_cast<uint8_t>(address & 0x07));
     }
 
+    /**
+     * Set segment remap
+     * 
+     * If true, column address 0 is mapped to SEG0 (RESET). If false, column address 127 is mapped to SEG0
+    */
+    void setSegmentRemap(bool remap)
+    {
+        sendCommand(COMMAND_SEGMENT_REMAP | static_cast<uint8_t>(remap));
+    }
+
+    /**
+     * Set the starting line
+    */
     void setDisplayStartLine(uint8_t line)
     {
         sendCommand(COMMAND_DISPLAY_START_LINE | (line & 0x3F));
     }
 
-    void setSegmentRemap(uint8_t ratio)
+    void setMultiplexRatio(uint8_t ratio)
     {
         sendCommand(COMMAND_MULTIPLEX_RATIO);
         sendCommand(ratio & 0x3F);
     }
 
-    void setComDirection(bool remap)
+    /**
+     * Set COM Scan Direction.
+     * 
+     * If true, sets the scan direction from COM[N-1] to COM0. Otherwise, COM0 to COM[N-1] (Reset).
+    */
+    void setComScanReverse(bool r)
     {
-        sendCommand(COMMAND_COM_SCAN_DIRECTION | (static_cast<uint8_t>(remap) << 3));
+        sendCommand(COMMAND_COM_SCAN_DIRECTION | (static_cast<uint8_t>(r) << 3));
     }
 
     void setDisplayOffset(uint8_t offset)
@@ -175,12 +218,18 @@ public:
         sendCommand(offset & 0x3F);
     }
 
-    void setCommConfig(uint8_t data)
+    void setComConfig(uint8_t data)
     {
         sendCommand(COMMAND_COM_CONFIG);
         sendCommand(data << 4);
     }
 
+    /**
+     * Set divide ratio and oscillator frequency
+     * 
+     * Divide ratio is 0-15.
+     * Frequency is 0-15.
+    */
     void setClockConfig(uint8_t divide, uint8_t freq)
     {
         sendCommand(COMMAND_DISPLAY_CLOCK_DIVIDE);
@@ -199,18 +248,34 @@ public:
         sendCommand(data);
     }
 
+    /**
+     * Enable the charge pump.
+     * 
+     * Enable internal voltage supply
+    */
+    void enableChargePump(bool enabled)
+    {
+        sendCommand(COMMAND_CHARGE_PUMP);
+        // 0x14 to enable
+        // 0x10 to disable
+        sendCommand(0x10 | (static_cast<uint8_t>(enabled) << 2));
+    }
+
     void nop()
     {
         sendCommand(COMMAND_NOP);
     }
 
 private:
+    /**
+     * Send a command to the display
+    */
     void sendCommand(uint8_t cmd)
     {
-        // i2c::start(address_, i2c::SlaMode::Write);
-        // i2c::write(CONTROL_COMMAND);
-        // i2c::write(cmd);
-        // i2c::stop();
+        device_.begin(comms::i2c::SlaMode::Write);
+        device_.write(CONTROL_COMMAND);
+        device_.write(cmd);
+        device_.end();
     }
 
     ftl::comms::i2c::I2CDevice<I2C> device_;

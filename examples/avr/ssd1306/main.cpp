@@ -28,15 +28,21 @@ int main()
     Logger<Hardware::Uart0> logger{Baud::Rate_9600};
     SystemLogger::instance().setLogger(&logger);
 
-    // Arduino Mega - Pullup SDA, SCL
-    Hardware::GpioD::OutputPin<0> scl_pullup;
-    Hardware::GpioD::OutputPin<1> sda_pullup;
+    Hardware::I2C::initialize();
 
     displays::Ssd1306<Hardware::I2C> oled{OLED_ADDRESS};
 
-    if (oled.detect())
+    if (oled.initialize())
     {
-        LOG_INFO("Configuring display...");
+        LOG_INFO("OLED initialized!");
+        // oled.enable(false);
+        // oled.setClockConfig(0, 0x08);
+        // oled.invert(true);
+        // oled.setPrecharge(0xF1);
+        // oled.enableChargePump(true);
+        // oled.enable(true);
+        // oled.resume();
+        // oled.initialize();
     }
 
     for(;;)
