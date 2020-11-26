@@ -35,14 +35,16 @@ int main()
     if (oled.initialize())
     {
         LOG_INFO("OLED initialized!");
-        // oled.enable(false);
-        // oled.setClockConfig(0, 0x08);
-        // oled.invert(true);
-        // oled.setPrecharge(0xF1);
-        // oled.enableChargePump(true);
-        // oled.enable(true);
-        // oled.resume();
-        // oled.initialize();
+        oled.setAddresingMode(displays::Ssd1306_AddressingMode::Page);
+    }
+
+    uint8_t buf[128] = {0};
+    memset(buf, 0xFF, sizeof(buf));
+
+    for (auto i = 0; i < 8; i += 2)
+    {
+        oled.setPageStart(i);
+        oled.sendBuffer(buf, sizeof(buf));
     }
 
     for(;;)

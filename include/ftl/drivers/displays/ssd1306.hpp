@@ -17,6 +17,14 @@ namespace drivers
 {
 namespace displays
 {
+// Memory Addressing Mode
+enum class Ssd1306_AddressingMode
+{
+    Horizontal = 0x00,
+    Vertical   = 0x01,
+    Page       = 0x02
+};
+
 /**
  * SSD1306 - OLED display
  * 
@@ -30,12 +38,18 @@ namespace displays
  *      - Determines if the next byte acts as a command or as data
  *      - Logic 0: The following byte is a command
  *      - Logic 1: The following byte is data for GDDRAM
+ * 
+ * GDDRAM is divided into 8 pages (PAGE0 - PAGE7).
+ * COM0 - COM63 refers to pixel row.
+ * SEG0 - SEG127 refers to pixel column
+ * 
+ * Both can be re-mapped to reverse the order.
 */
 template<class I2C>
 class Ssd1306
 {
     static constexpr uint8_t CONTROL_COMMAND = 0x00;
-    static constexpr uint8_t CONTROL_DATA = 0xC0;
+    static constexpr uint8_t CONTROL_DATA = 0x40;
 
     // Constrast, followed by 8-bit constrast level
     static constexpr uint8_t COMMAND_CONTRAST = 0x81;
@@ -84,14 +98,13 @@ class Ssd1306
     // Charge Pump
     static constexpr uint8_t COMMAND_CHARGE_PUMP = 0x8D;
 
+    static constexpr uint8_t NUM_PAGES = 8;
+    static constexpr uint8_t ROW_PER_PAGE = 8;
+    static constexpr uint8_t COL_PER_PAGE = 128;
+
 public:
-    // Memory Addressing Mode
-    enum class AddressingMode
-    {
-        Horizontal = 0x00,
-        Vertical   = 0x01,
-        Page       = 0x02
-    };
+    static constexpr uint8_t WIDTH = 128;
+    static constexpr uint8_t HEIGHT = 64;
 
     Ssd1306(uint8_t address)
         : device_{address}
@@ -118,7 +131,24 @@ public:
         enable(true);
         resume();
 
+        clear();
+
         return true;
+    }
+
+    /**
+     * Zero out display RAM
+    */
+    void clear()
+    {
+        // Clear the display by writing a zeroed out page buffer
+        uint8_t page_buf[WIDTH] = {0};
+
+        for (auto i = 0u; i < NUM_PAGES; ++i)
+        {
+            setPageStart(i);
+            sendBuffer(page_buf, sizeof(page_buf));
+        }
     }
 
     bool detect()
@@ -153,12 +183,18 @@ public:
         sendCommand(COMMAND_PAGE_MODE_SET_HIGH_COL_START | static_cast<uint8_t>(address >> 4));
     }
 
-    void setAddresingMode(AddressingMode mode)
+    void setAddresingMode(Ssd1306_AddressingMode mode)
     {
         sendCommand(COMMAND_ADDRESSING_MODE);
         sendCommand(static_cast<uint8_t>(mode));
     }
 
+    /**
+     * Set start and end column addresses
+     * RESET:
+     *  start = 0
+     *  end = 127
+    */
     void setColumnAddress(uint8_t start, uint8_t end)
     {
         sendCommand(COMMAND_COLUMN_ADDRESS);
@@ -173,7 +209,7 @@ public:
         sendCommand(end & 0x07);
     }
 
-    void setPageStartPaging(uint8_t address)
+    void setPageStart(uint8_t address)
     {
         sendCommand(COMMAND_SET_PAGE_START_ADDRESS | static_cast<uint8_t>(address & 0x07));
     }
@@ -264,6 +300,27 @@ public:
     void nop()
     {
         sendCommand(COMMAND_NOP);
+    }
+
+    /**
+     * Send a data buffer GDDRAM
+    */
+    void sendBuffer(const uint8_t* buffer, unsigned long length)
+    {
+        if (device_.begin(comms::i2c::SlaMode::Write))
+        {
+            device_.write(CONTROL_DATA);
+            for (auto i = 0u; i < length; ++i)
+            {
+                device_.write(buffer[i]);
+            }
+            device_.end();
+        }
+    }
+
+    void sendByte(uint8_t data)
+    {
+        sendBuffer(&data, 1);
     }
 
 private:
