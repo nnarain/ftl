@@ -23,12 +23,6 @@ namespace i2c
     using ClockMode = comms::i2c::ClockMode;
     using SlaMode = comms::i2c::SlaMode;
 
-    enum class Status
-    {
-        OK = 0,
-
-    };
-
     /**
      * Initialize I2C
     */
@@ -65,6 +59,11 @@ namespace i2c
     * Read buffer from the bus
     */
     void read(uint8_t* data, uint32_t len);
+
+    /**
+     * Get the I2C state
+    */
+    comms::i2c::State status();
 
     /**
      * I2C status to string

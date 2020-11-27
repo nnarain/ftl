@@ -9,12 +9,20 @@
 
 #include <stdint.h>
 
+#include <ftl/comms/i2c/i2c_device.hpp>
+
 namespace ftl
 {
 namespace drivers
 {
-namespace displays
+// Memory Addressing Mode
+enum class Ssd1306_AddressingMode
 {
+    Horizontal = 0x00,
+    Vertical   = 0x01,
+    Page       = 0x02
+};
+
 /**
  * SSD1306 - OLED display
  * 
@@ -23,16 +31,23 @@ namespace displays
  * |SLA+RW|Co:D/C#:000000|Data|Co:D/C#:0..0|...
  * 
  * Co   - continuation bit
- *      - If set to logic 0, transmission of the following information will container data bytes only
+ *      - If set to logic 0, transmission of the following information will contain data bytes only
  * D/C# - Data / Command selection bit
  *      - Determines if the next byte acts as a command or as data
  *      - Logic 0: The following byte is a command
  *      - Logic 1: The following byte is data for GDDRAM
+ * 
+ * GDDRAM is divided into 8 pages (PAGE0 - PAGE7).
+ * COM0 - COM63 refers to pixel row.
+ * SEG0 - SEG127 refers to pixel column
+ * 
+ * Both can be re-mapped to reverse the order.
 */
+template<class I2C>
 class Ssd1306
 {
     static constexpr uint8_t CONTROL_COMMAND = 0x00;
-    static constexpr uint8_t CONTROL_DATA = 0xC0;
+    static constexpr uint8_t CONTROL_DATA = 0x40;
 
     // Constrast, followed by 8-bit constrast level
     static constexpr uint8_t COMMAND_CONTRAST = 0x81;
@@ -78,27 +93,68 @@ class Ssd1306
     // NOP
     static constexpr uint8_t COMMAND_NOP = 0xE3;
 
+    // Charge Pump
+    static constexpr uint8_t COMMAND_CHARGE_PUMP = 0x8D;
+
+    static constexpr uint8_t NUM_PAGES = 8;
+    static constexpr uint8_t ROW_PER_PAGE = 8;
+    static constexpr uint8_t COL_PER_PAGE = 128;
 
 public:
-    // Memory Addressing Mode
-    enum class AddressingMode
-    {
-        Horizontal = 0x00,
-        Vertical   = 0x01,
-        Page       = 0x02
-    };
+    static constexpr uint8_t WIDTH = 128;
+    static constexpr uint8_t HEIGHT = 64;
 
     Ssd1306(uint8_t address)
-        : address_{address}
+        : device_{address}
     {
+    }
+
+    bool initialize()
+    {
+        if (!device_.detect())
+        {
+            // Failed to detect
+            return false;
+        }
+
+        enable(false);
+        setDisplayOffset(0);
+        setDisplayStartLine(0);
+        setSegmentRemap(true);
+        setComScanReverse(false);
+        setComConfig(false, false);
+        setConstrast(0x7F);
+        setClockConfig(0x00, 0x08);
+        enableChargePump(true);
+        invert(false);
+        enable(true);
+        resume();
+
+        clear();
+
+        return true;
+    }
+
+    /**
+     * Zero out display RAM
+    */
+    void clear()
+    {
+        // Clear the display by writing a zeroed out page buffer
+        uint8_t page_buf[WIDTH] = {0};
+
+        setAddresingMode(Ssd1306_AddressingMode::Page);
+
+        for (auto i = 0u; i < NUM_PAGES; ++i)
+        {
+            setPageStart(i);
+            sendBuffer(page_buf, sizeof(page_buf));
+        }
     }
 
     bool detect()
     {
-        const auto status = i2c::start(address_, i2c::SlaMode::Write);
-        i2c::stop();
-
-        return status == 0;
+        return device_.detect();
     }
 
     void enable(bool on)
@@ -128,12 +184,18 @@ public:
         sendCommand(COMMAND_PAGE_MODE_SET_HIGH_COL_START | static_cast<uint8_t>(address >> 4));
     }
 
-    void setAddresingMode(AddressingMode mode)
+    void setAddresingMode(Ssd1306_AddressingMode mode)
     {
         sendCommand(COMMAND_ADDRESSING_MODE);
         sendCommand(static_cast<uint8_t>(mode));
     }
 
+    /**
+     * Set start and end column addresses
+     * RESET:
+     *  start = 0
+     *  end = 127
+    */
     void setColumnAddress(uint8_t start, uint8_t end)
     {
         sendCommand(COMMAND_COLUMN_ADDRESS);
@@ -148,25 +210,43 @@ public:
         sendCommand(end & 0x07);
     }
 
-    void setPageStartPaging(uint8_t address)
+    void setPageStart(uint8_t address)
     {
         sendCommand(COMMAND_SET_PAGE_START_ADDRESS | static_cast<uint8_t>(address & 0x07));
     }
 
+    /**
+     * Set segment remap
+     * 
+     * If true, column address 0 is mapped to SEG0 (RESET). If false, column address 127 is mapped to SEG0
+    */
+    void setSegmentRemap(bool remap)
+    {
+        sendCommand(COMMAND_SEGMENT_REMAP | static_cast<uint8_t>(remap));
+    }
+
+    /**
+     * Set the starting line
+    */
     void setDisplayStartLine(uint8_t line)
     {
         sendCommand(COMMAND_DISPLAY_START_LINE | (line & 0x3F));
     }
 
-    void setSegmentRemap(uint8_t ratio)
+    void setMultiplexRatio(uint8_t ratio)
     {
         sendCommand(COMMAND_MULTIPLEX_RATIO);
         sendCommand(ratio & 0x3F);
     }
 
-    void setComDirection(bool remap)
+    /**
+     * Set COM Scan Direction.
+     * 
+     * If true, sets the scan direction from COM[N-1] to COM0. Otherwise, COM0 to COM[N-1] (Reset).
+    */
+    void setComScanReverse(bool r)
     {
-        sendCommand(COMMAND_COM_SCAN_DIRECTION | (static_cast<uint8_t>(remap) << 3));
+        sendCommand(COMMAND_COM_SCAN_DIRECTION | (static_cast<uint8_t>(r) << 3));
     }
 
     void setDisplayOffset(uint8_t offset)
@@ -175,12 +255,27 @@ public:
         sendCommand(offset & 0x3F);
     }
 
-    void setCommConfig(uint8_t data)
+    /**
+     * Set COM configuration
+     * 
+     * @param com_alt Use alternative COM pin configuration
+     * @param left_right_remap Enable left right remap
+    */
+    void setComConfig(bool com_alt, bool left_right_remap)
     {
+        const auto data = (static_cast<uint8_t>(com_alt) << 4)
+                          | (static_cast<uint8_t>(left_right_remap) << 5)
+                          | 0x02;
         sendCommand(COMMAND_COM_CONFIG);
-        sendCommand(data << 4);
+        sendCommand(data);
     }
 
+    /**
+     * Set divide ratio and oscillator frequency
+     * 
+     * Divide ratio is 0-15.
+     * Frequency is 0-15.
+    */
     void setClockConfig(uint8_t divide, uint8_t freq)
     {
         sendCommand(COMMAND_DISPLAY_CLOCK_DIVIDE);
@@ -199,25 +294,60 @@ public:
         sendCommand(data);
     }
 
+    /**
+     * Enable the charge pump.
+     * 
+     * Enable internal voltage supply
+    */
+    void enableChargePump(bool enabled)
+    {
+        sendCommand(COMMAND_CHARGE_PUMP);
+        // 0x14 to enable
+        // 0x10 to disable
+        sendCommand(0x10 | (static_cast<uint8_t>(enabled) << 2));
+    }
+
     void nop()
     {
         sendCommand(COMMAND_NOP);
     }
 
-private:
-    void sendCommand(uint8_t cmd)
+    /**
+     * Send a data buffer GDDRAM
+    */
+    void sendBuffer(const uint8_t* buffer, unsigned long length)
     {
-        // i2c::start(address_, i2c::SlaMode::Write);
-        // i2c::write(CONTROL_COMMAND);
-        // i2c::write(cmd);
-        // i2c::stop();
+        if (device_.begin(comms::i2c::SlaMode::Write))
+        {
+            device_.write(CONTROL_DATA);
+            for (auto i = 0u; i < length; ++i)
+            {
+                device_.write(buffer[i]);
+            }
+            device_.end();
+        }
     }
 
-    // I2C device address
-    uint8_t address_;
+    void sendByte(uint8_t data)
+    {
+        sendBuffer(&data, 1);
+    }
+
+private:
+    /**
+     * Send a command to the display
+    */
+    void sendCommand(uint8_t cmd)
+    {
+        device_.begin(comms::i2c::SlaMode::Write);
+        device_.write(CONTROL_COMMAND);
+        device_.write(cmd);
+        device_.end();
+    }
+
+    ftl::comms::i2c::I2CDevice<I2C> device_;
 };
 
-}
 }
 }
 

@@ -82,7 +82,6 @@ namespace i2c
         }
 
         // Send the slave address and mode on the bus
-        // slarw(address, mode);
         write((address << 1) | static_cast<uint8_t>(mode));
 
         status = TW_STATUS;
@@ -152,6 +151,32 @@ namespace i2c
         {
             // Read the bus and generate a NACK on the last read
             data[i] = read(i < (len - 1));
+        }
+    }
+
+    comms::i2c::State status()
+    {
+        switch (TW_STATUS)
+        {
+        case TW_START:
+            return comms::i2c::State::Start;
+        case TW_REP_START:
+            return comms::i2c::State::RepeatedStart;
+        case TW_MT_SLA_ACK:
+            return comms::i2c::State::MT_SlaveAck;
+        case TW_MT_SLA_NACK:
+            return comms::i2c::State::MT_DataNAck;
+        case TW_MT_DATA_ACK:
+            return comms::i2c::State::MT_DataAck;
+        case TW_MT_DATA_NACK:
+            return comms::i2c::State::MT_DataNAck;
+        case TW_MR_SLA_ACK:
+            return comms::i2c::State::MR_SlaveAck;
+        case TW_MR_SLA_NACK:
+            return comms::i2c::State::MR_SlaveNAck;
+        default:
+            // FIXME: All I2C states
+            return comms::i2c::State::Ready;
         }
     }
 
