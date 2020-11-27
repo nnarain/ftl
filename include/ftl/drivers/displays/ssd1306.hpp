@@ -15,8 +15,6 @@ namespace ftl
 {
 namespace drivers
 {
-namespace displays
-{
 // Memory Addressing Mode
 enum class Ssd1306_AddressingMode
 {
@@ -124,10 +122,11 @@ public:
         setDisplayStartLine(0);
         setSegmentRemap(true);
         setComScanReverse(false);
-        setComConfig(2);
+        setComConfig(false, false);
         setConstrast(0x7F);
         setClockConfig(0x00, 0x08);
         enableChargePump(true);
+        invert(false);
         enable(true);
         resume();
 
@@ -143,6 +142,8 @@ public:
     {
         // Clear the display by writing a zeroed out page buffer
         uint8_t page_buf[WIDTH] = {0};
+
+        setAddresingMode(Ssd1306_AddressingMode::Page);
 
         for (auto i = 0u; i < NUM_PAGES; ++i)
         {
@@ -254,10 +255,19 @@ public:
         sendCommand(offset & 0x3F);
     }
 
-    void setComConfig(uint8_t data)
+    /**
+     * Set COM configuration
+     * 
+     * @param com_alt Use alternative COM pin configuration
+     * @param left_right_remap Enable left right remap
+    */
+    void setComConfig(bool com_alt, bool left_right_remap)
     {
+        const auto data = (static_cast<uint8_t>(com_alt) << 4)
+                          | (static_cast<uint8_t>(left_right_remap) << 5)
+                          | 0x02;
         sendCommand(COMMAND_COM_CONFIG);
-        sendCommand(data << 4);
+        sendCommand(data);
     }
 
     /**
@@ -338,7 +348,6 @@ private:
     ftl::comms::i2c::I2CDevice<I2C> device_;
 };
 
-}
 }
 }
 

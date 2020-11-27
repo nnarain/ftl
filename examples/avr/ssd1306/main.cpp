@@ -16,6 +16,7 @@
 #include <ftl/platform/avr/atmega2560/hardware.hpp>
 
 #include <ftl/drivers/displays/ssd1306.hpp>
+#include <ftl/gfx/adaptors/ssd1306_display.hpp>
 
 #define OLED_ADDRESS 0x3C
 
@@ -30,26 +31,24 @@ int main()
 
     Hardware::I2C::initialize();
 
-    displays::Ssd1306<Hardware::I2C> oled{OLED_ADDRESS};
-
-    if (oled.initialize())
+    ftl::gfx::Ssd1306Display<Hardware::I2C> display{OLED_ADDRESS};
+    if (display.initialize())
     {
-        LOG_INFO("OLED initialized!");
-        oled.setAddresingMode(displays::Ssd1306_AddressingMode::Page);
+        LOG_INFO("OLED init complete");
+    }
+    else
+    {
+        LOG_ERROR("Failed to initialized OLED display!");
     }
 
-    uint8_t buf[128] = {0};
-    memset(buf, 0xFF, sizeof(buf));
+    display.drawRect(0, 0, 10, 10, ftl::gfx::Color::white());
+    display.update();
 
-    for (auto i = 0; i < 8; i += 2)
-    {
-        oled.setPageStart(i);
-        oled.sendBuffer(buf, sizeof(buf));
-    }
+    int c = 0;
 
     for(;;)
     {
-
+        LOG_INFO("%d", c);
         _delay_ms(1000);
     }
 
