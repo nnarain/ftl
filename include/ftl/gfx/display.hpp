@@ -132,43 +132,33 @@ namespace gfx
         */
         virtual void drawXBitmap(const uint8_t* const bitmap, int x, int y, int w, int h, const Color& c)
         {
-            unsigned int idx = 0;
-            uint8_t byte = bitmap[idx++];
+            const auto bytes_per_row = w / 8;
 
-            const auto y1 = y + h;
-            const auto x1 = x + w;
-
-            // Iterate over rows
-            for (auto row = y; row < y1; ++row)
+            for (auto j = 0; j < h; ++j)
             {
-                auto scan = 0;
-                // Iterate over columns
-                for (auto col = x; col < x1; ++col)
+                const auto row = y + j;
+                uint8_t byte = 0;
+
+                for (auto i = 0; i < w; ++i)
                 {
-                    if (byte & 0x01)
+                    if (i & 7)
                     {
-                        drawPixel(col, row, c);
-                    }
-
-                    scan++;
-
-                    if ((col + 1) & 0x07)
-                    {
+                        // Processing a byte, shift 1 down to the next pixel
                         byte >>= 1;
                     }
                     else
                     {
-                        byte = bitmap[idx++];
+                        // New byte
+                        // Skip bytes until the current row + byte offset for columns (1 bit per column pixel)
+                        byte = bitmap[j * bytes_per_row + i / 8];
+                    }
+
+                    if (byte & 0x01)
+                    {
+                        drawPixel(x + i, row, c);
                     }
                 }
-
-                // Extra bit not used in the byte are ignored
-                if (w % 8 != 0)
-                {
-                    byte = bitmap[idx++];
-                }
             }
-
         }
 
     private:

@@ -20,7 +20,6 @@
 
 // XBITMAP sprites
 #include "dino.h"
-#include "smile.h"
 
 #define OLED_ADDRESS 0x3C
 
@@ -45,12 +44,18 @@ int main()
         LOG_ERROR("Failed to initialized OLED display!");
     }
 
-    display.drawXBitmap(dino_bits, 0, 20, dino_width, dino_height, ftl::gfx::Color::white());
-    display.update();
+    int x = 0;
 
     for(;;)
     {
-        _delay_ms(1000);
+        display.clear();
+
+        display.drawXBitmap(dino_bits, x, 20, dino_width, dino_height, ftl::gfx::Color::white());
+        display.update();
+
+        x = (x + 1) % 50;
+
+        _delay_ms(100);
     }
 
     return 0;
