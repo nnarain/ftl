@@ -122,9 +122,10 @@ public:
         setDisplayStartLine(0);
         setSegmentRemap(true);
         setComScanReverse(false);
-        setComConfig(false, false);
+        setComConfig(true, false); // FIXME: Display size dependent
         setConstrast(0x7F);
         setClockConfig(0x00, 0x08);
+        setMultiplexRatio(63); // FIXME: configurable display height?
         enableChargePump(true);
         invert(false);
         enable(true);
@@ -178,6 +179,9 @@ public:
         sendCommand(value);
     }
 
+    /**
+     * Set the column starting address for page addressing mode
+    */
     void setColumnStartAddressPaging(uint8_t address)
     {
         sendCommand(COMMAND_PAGE_MODE_SET_LOW_COL_START | static_cast<uint8_t>(address & 0x0F));
@@ -263,11 +267,11 @@ public:
     */
     void setComConfig(bool com_alt, bool left_right_remap)
     {
-        const auto data = (static_cast<uint8_t>(com_alt) << 4)
+        const auto config = (static_cast<uint8_t>(com_alt) << 4)
                           | (static_cast<uint8_t>(left_right_remap) << 5)
                           | 0x02;
         sendCommand(COMMAND_COM_CONFIG);
-        sendCommand(data);
+        sendCommand(config);
     }
 
     /**

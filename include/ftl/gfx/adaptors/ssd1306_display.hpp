@@ -32,6 +32,7 @@ class Ssd1306Display : public RasterDisplay
 public:
     static constexpr uint8_t NUM_COLUMNS = 128;
     static constexpr uint8_t NUM_PAGES = 8;
+    static constexpr uint8_t NUM_ROWS_PER_PAGE = 8;
 
     /**
      * Create an instance of an SSD1306 display.
@@ -58,10 +59,11 @@ public:
 
     void drawPixel(unsigned int col, unsigned int row, const Color& c) override
     {
-        auto& page = framebuffer_[row / 8];
+        auto& page = framebuffer_[row / NUM_ROWS_PER_PAGE];
         const auto page_row = row % 8;
 
-        FORCE(page[col], 1 << page_row, c.monochrome() << page_row);
+        // FORCE(page[col], 1 << page_row, c.monochrome() << page_row);
+        page[col] = (page[col] & ~(1 << page_row)) | (c.monochrome() << page_row);
     }
 
     /**
@@ -71,6 +73,7 @@ public:
     {
         // Set the column address bounds to the entire display
         driver_.setColumnAddress(0, 127);
+        driver_.setPageAddress(0, 7);
         driver_.sendBuffer(&framebuffer_[0][0], sizeof(framebuffer_));
     }
 

@@ -28,7 +28,7 @@ namespace gfx
         /**
          * Set a pixel in the display
         */
-        virtual void drawPixel(unsigned int col, unsigned int row, const Color& pixel) = 0;
+        virtual void drawPixel(unsigned int col, unsigned int row, const Color& c) = 0;
 
         /**
          * Update the display
@@ -72,18 +72,93 @@ namespace gfx
         }
 
         /**
+         * Draw a vertical line
+        */
+        virtual void drawVLine(int x0, int y0, int h, const Color& c)
+        {
+            drawLine(x0, y0, x0, y0 + h, c);
+        }
+
+        /**
+         * Draw a horizontal line
+        */
+        virtual void drawHLine(int x0, int y0, int w, const Color& c)
+        {
+            drawLine(x0, y0, x0 + w, y0, c);
+        }
+
+        /**
          * Draw a rectangle
         */
         virtual void drawRect(int x0, int y0, int w, int h, const Color& c)
         {
             // Draw top
-            drawLine(x0, y0, x0 + w, y0, c);
+            drawHLine(x0, y0, w, c);
             // Draw bottom
-            drawLine(x0, y0 + h, x0 + w, y0 + h, c);
+            drawHLine(x0, y0 + h, w, c);
             // Draw left
-            drawLine(x0, y0, x0, y0 + h, c);
+            drawVLine(x0, y0, h, c);
             // Draw right
-            drawLine(x0 + w, y0, x0 + w, y0 + h, c);
+            drawVLine(x0 + w, y0, h, c);
+        }
+
+        /**
+         * Draw fill rectangle
+        */
+        virtual void drawFillRect(int x0, int y0, int w, int h, const Color& c)
+        {
+            const auto x1 = x0 + w;
+            const auto y1 = y0 + h;
+            for (auto x = x0; x <= x1; ++x)
+            {
+                for (auto y = y0; y <= y1; ++y)
+                {
+                    drawPixel(x, y, c);
+                }
+            }
+        }
+
+        // /**
+        //  * Draw circle
+        // */
+        // virtual void drawCircle(int xc, int yc, int r, const Color& c)
+        // {
+        //     const auto x = 0;
+        //     const auto y = r;
+        // }
+
+        /**
+         * Draw a bitmap in XBITMAP format
+        */
+        virtual void drawXBitmap(const uint8_t* const bitmap, int x, int y, int w, int h, const Color& c)
+        {
+            const auto bytes_per_row = w / 8;
+
+            for (auto j = 0; j < h; ++j)
+            {
+                const auto row = y + j;
+                uint8_t byte = 0;
+
+                for (auto i = 0; i < w; ++i)
+                {
+                    if (i & 7)
+                    {
+                        // Processing a byte, shift 1 down to the next pixel
+                        byte >>= 1;
+                    }
+                    else
+                    {
+                        // New byte
+                        // Skip bytes until the current row + byte offset for columns (1 bit per column pixel)
+                        byte = bitmap[j * bytes_per_row + i / 8];
+                    }
+
+                    if (byte & 0x01)
+                    {
+                        drawPixel(x + i, row, c);
+                    }
+                }
+            }
         }
 
     private:

@@ -18,6 +18,9 @@
 #include <ftl/drivers/displays/ssd1306.hpp>
 #include <ftl/gfx/adaptors/ssd1306_display.hpp>
 
+// XBITMAP sprites
+#include "dino.h"
+
 #define OLED_ADDRESS 0x3C
 
 using namespace ftl::drivers;
@@ -29,7 +32,7 @@ int main()
     Logger<Hardware::Uart0> logger{Baud::Rate_9600};
     SystemLogger::instance().setLogger(&logger);
 
-    Hardware::I2C::initialize();
+    Hardware::I2C::initialize(ftl::comms::i2c::ClockMode::Fast);
 
     ftl::gfx::Ssd1306Display<Hardware::I2C> display{OLED_ADDRESS};
     if (display.initialize())
@@ -41,15 +44,18 @@ int main()
         LOG_ERROR("Failed to initialized OLED display!");
     }
 
-    display.drawRect(0, 0, 10, 10, ftl::gfx::Color::white());
-    display.update();
-
-    int c = 0;
+    int x = 0;
 
     for(;;)
     {
-        LOG_INFO("%d", c);
-        _delay_ms(1000);
+        display.clear();
+
+        display.drawXBitmap(dino_bits, x, 20, dino_width, dino_height, ftl::gfx::Color::white());
+        display.update();
+
+        x = (x + 1) % 50;
+
+        _delay_ms(100);
     }
 
     return 0;
