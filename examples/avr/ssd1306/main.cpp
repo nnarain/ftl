@@ -44,18 +44,18 @@ int main()
         LOG_ERROR("Failed to initialized OLED display!");
     }
 
-    int x = 0;
+
+    display.clear();
+    display.drawXBitmap(dino_bits, 0, 20, dino_width, dino_height, ftl::gfx::Color::white());
+    display.update();
+
+    // Enable hardware scrolling
+    auto& driver = display.getDriver();
+    driver.setupHorizontalScroll(Ssd1306_ScrollDirection::Right, 0, 7, Ssd1306_FrameInterval::FRAME_2);
+    driver.scroll(true);
 
     for(;;)
     {
-        display.clear();
-
-        display.drawXBitmap(dino_bits, x, 20, dino_width, dino_height, ftl::gfx::Color::white());
-        display.update();
-
-        x = (x + 1) % 50;
-
-        _delay_ms(100);
     }
 
     return 0;
