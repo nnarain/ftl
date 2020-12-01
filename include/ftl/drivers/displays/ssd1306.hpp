@@ -23,6 +23,26 @@ enum class Ssd1306_AddressingMode
     Page       = 0x02
 };
 
+// Scroll mode
+enum class Ssd1306_ScrollDirection
+{
+    Right,
+    Left,
+};
+
+// Scroll timing
+enum class Ssd1306_FrameInterval
+{
+    FRAME_5   = 0x00,
+    FRAME_64  = 0x01,
+    FRAME_128 = 0x02,
+    FRAME_256 = 0x03,
+    FRAME_3   = 0x04,
+    FRAME_4   = 0x05,
+    FRAME_25  = 0x06,
+    FRAME_2   = 0x07,
+};
+
 /**
  * SSD1306 - OLED display
  * 
@@ -92,6 +112,15 @@ class Ssd1306
     static constexpr uint8_t COMMAND_DESELECT_LEVEL = 0xDB;
     // NOP
     static constexpr uint8_t COMMAND_NOP = 0xE3;
+
+    // Continuous vertical and horizontal scroll
+    static constexpr uint8_t COMMAND_SCROLL_SETUP = 0x29;
+    // Scroll activation
+    static constexpr uint8_t COMMAND_SCROLL_ACTIVATION = 0x2E;
+    // Scroll horizontal
+    static constexpr uint8_t COMMAND_SCROLL_HORIZONTAL = 0x26;
+    // Vertical Scroll Area
+    static constexpr uint8_t COMMAND_SET_VERTICAL_SCROLL_AREA = 0xAE;
 
     // Charge Pump
     static constexpr uint8_t COMMAND_CHARGE_PUMP = 0x8D;
@@ -314,6 +343,64 @@ public:
     void nop()
     {
         sendCommand(COMMAND_NOP);
+    }
+
+    /**
+     * Activate scroll
+    */
+    void scroll(bool e)
+    {
+        sendCommand(COMMAND_SCROLL_ACTIVATION | static_cast<uint8_t>(e));
+    }
+
+    /**
+     * Setup continuous vertical and horizontal scrolling
+    */
+    void setupVerticalAndHorizontalScroll(Ssd1306_ScrollDirection dir, uint8_t page_start, uint8_t page_end, Ssd1306_FrameInterval interval, uint8_t scroll_offset)
+    {
+        uint8_t mode = (dir == Ssd1306_ScrollDirection::Right) ? 0x29 : 0x2A;
+        // Set the scroll mode
+        sendCommand(static_cast<uint8_t>(mode));
+        // Dummy byte
+        sendCommand(0x00);
+        // Set the start page address
+        sendCommand(page_start & 0x07);
+        // Set frame interval between scroll steps
+        sendCommand(static_cast<uint8_t>(interval));
+        // Set page end
+        sendCommand(page_end & 0x07);
+        // Set the vertical scroll offset
+        sendCommand(scroll_offset & 0x3F);
+    }
+
+    /**
+     * Setup continuous horizontal scroll
+    */
+    void setupHorizontalScroll(Ssd1306_ScrollDirection dir, uint8_t page_start, uint8_t page_end, Ssd1306_FrameInterval interval)
+    {
+        // Send horizontal scroll with the direction bit
+        sendCommand(COMMAND_SCROLL_HORIZONTAL | static_cast<uint8_t>(dir));
+        // dummy byte
+        sendCommand(0x00);
+        // set the start page
+        sendCommand(page_start & 0x07);
+        // set the frame interval between scroll sets
+        sendCommand(static_cast<uint8_t>(interval));
+        // set the end page
+        sendCommand(page_end & 0x07);
+        // dummy bytes
+        sendCommand(0x00);
+        sendCommand(0xFF);
+    }
+
+    /**
+     * Set vertical scroll area
+    */
+    void setVerticalScrollArea(uint8_t top_fixed_rows, uint8_t scroll_area_rows)
+    {
+        sendCommand(COMMAND_SET_VERTICAL_SCROLL_AREA);
+        sendCommand(top_fixed_rows & 0x3F);
+        sendCommand(scroll_area_rows & 0x7F);
     }
 
     /**
