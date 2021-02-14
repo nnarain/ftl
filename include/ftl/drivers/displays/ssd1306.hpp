@@ -131,10 +131,16 @@ class Ssd1306
 
 public:
     static constexpr uint8_t WIDTH = 128;
-    static constexpr uint8_t HEIGHT = 64;
+    // static constexpr uint8_t HEIGHT = 64;
+
+    Ssd1306(uint8_t address, uint8_t height)
+        : device_{address}
+        , height_{height}
+    {
+    }
 
     Ssd1306(uint8_t address)
-        : device_{address}
+        : Ssd1306{address, 64}
     {
     }
 
@@ -151,12 +157,21 @@ public:
         setDisplayStartLine(0);
         setSegmentRemap(true);
         setComScanReverse(false);
-        setComConfig(true, false); // FIXME: Display size dependent
+        if (height_ == 64)
+        {
+            setComConfig(true, false);
+        }
+        else
+        {
+            // height = 32
+            setComConfig(false, false);
+        }
         setConstrast(0x7F);
         setClockConfig(0x00, 0x08);
-        setMultiplexRatio(63); // FIXME: configurable display height?
+        setMultiplexRatio(height_ - 1);
         enableChargePump(true);
         invert(false);
+        scroll(false);
         enable(true);
         resume();
 
@@ -437,6 +452,7 @@ private:
     }
 
     ftl::comms::i2c::I2CDevice<I2C> device_;
+    uint8_t height_;
 };
 
 }
