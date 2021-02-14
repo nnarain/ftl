@@ -34,13 +34,18 @@ public:
     static constexpr uint8_t NUM_PAGES = 8;
     static constexpr uint8_t NUM_ROWS_PER_PAGE = 8;
 
+    Ssd1306Display(uint8_t i2c_address, uint8_t height)
+        : driver_{i2c_address, height}
+    {
+        clear();
+    }
+
     /**
      * Create an instance of an SSD1306 display.
     */
     Ssd1306Display(uint8_t i2c_address)
-        : driver_{i2c_address}
+        : Ssd1306Display{i2c_address, 64}
     {
-        clear();
     }
 
     bool initialize(bool com_reverse = true)

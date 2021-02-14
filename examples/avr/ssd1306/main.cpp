@@ -22,6 +22,7 @@
 #include "dino.h"
 
 #define OLED_ADDRESS 0x3C
+#define DISPLAY_HEIGHT 64
 
 using namespace ftl::drivers;
 using namespace ftl::utils;
@@ -34,7 +35,7 @@ int main()
 
     Hardware::I2C::initialize(ftl::comms::i2c::ClockMode::Fast);
 
-    ftl::gfx::Ssd1306Display<Hardware::I2C> display{OLED_ADDRESS};
+    ftl::gfx::Ssd1306Display<Hardware::I2C> display{OLED_ADDRESS, DISPLAY_HEIGHT};
     if (display.initialize())
     {
         LOG_INFO("OLED init complete");
