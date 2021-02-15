@@ -13,6 +13,7 @@
 
 #include <ftl/gfx/display.hpp>
 #include <ftl/gfx/color.hpp>
+#include <ftl/memory/memreader.hpp>
 #include <ftl/utils/bitutil.hpp>
 
 #include <ftl/drivers/displays/ssd1306.hpp>
@@ -26,8 +27,8 @@ namespace gfx
 /**
  * SSD1306 Display Adaptor
 */
-template<typename T>
-class Ssd1306Display : public RasterDisplay
+template<typename T, typename GfxReader = memory::DefaultMemoryReader>
+class Ssd1306Display : public RasterDisplay<GfxReader>
 {
 public:
     static constexpr uint8_t NUM_COLUMNS = 128;
