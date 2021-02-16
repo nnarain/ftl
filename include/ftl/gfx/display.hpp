@@ -31,6 +31,11 @@ namespace gfx
     class RasterDisplay
     {
     public:
+        RasterDisplay(unsigned int width, unsigned int height)
+            : width_{width}, height_{height}
+        {
+        }
+
         /**
          * Set a pixel in the display
         */
@@ -180,7 +185,7 @@ namespace gfx
                 {
                     // Next line
                     x = 0;
-                    y += 8;
+                    y = (y + font_->height()) % height_;
                 }
                 else if (c == '\r')
                 {
@@ -191,7 +196,7 @@ namespace gfx
                 else
                 {
                     drawChar(c, x, y, color);
-                    x += 8;
+                    x += font_->width();
                 }
             }
         }
@@ -201,16 +206,19 @@ namespace gfx
         */
         void drawChar(const char c, int x, int y, const gfx::Color& color)
         {
-            if (font_)
+            if (!font_) return;
+
+            for (auto i = 0; i < font_->width(); ++i)
             {
-                for (auto i = 0; i < font_->width(); ++i)
+                for (auto j = 0; j < font_->height(); ++j)
                 {
-                    for (auto j = 0; j < font_->height(); ++j)
+                    if (font_->at(c, i, j, gfx_reader_))
                     {
-                        if (font_->at(c, i, j, gfx_reader_))
-                        {
-                            drawPixel(x + i, y + j, color);
-                        }
+                        drawPixel(x + i, y + j, color);
+                    }
+                    else
+                    {
+                        drawPixel(x + i, y + j, gfx::Color::black());
                     }
                 }
             }
@@ -224,9 +232,26 @@ namespace gfx
             font_ = font;
         }
 
+        unsigned int width() const
+        {
+            return width_;
+        }
+
+        unsigned int height() const
+        {
+            return height_;
+        }
+
+        const Font* font() const
+        {
+            return font_;
+        }
+
     private:
         GfxDataReader gfx_reader_;
         const Font* font_{nullptr};
+        unsigned int width_;
+        unsigned int height_;
     };
 }
 }

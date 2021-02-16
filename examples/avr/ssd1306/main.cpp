@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <ftl/utils/logger.hpp>
+#include <ftl/logging/logger.hpp>
 #include <ftl/comms/i2c/i2c_device.hpp>
 #include <ftl/platform/avr/atmega2560/hardware.hpp>
 
@@ -25,7 +25,7 @@
 #define DISPLAY_HEIGHT 64
 
 using namespace ftl::drivers;
-using namespace ftl::utils;
+using namespace ftl::logging;
 using namespace ftl::platform::avr::atmega2560;
 
 int main()

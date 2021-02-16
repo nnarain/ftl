@@ -36,7 +36,8 @@ public:
     static constexpr uint8_t NUM_ROWS_PER_PAGE = 8;
 
     Ssd1306Display(uint8_t i2c_address, uint8_t height)
-        : driver_{i2c_address, height}
+        : RasterDisplay<GfxReader>{NUM_COLUMNS, height}
+        , driver_{i2c_address, height}
     {
         clear();
     }
