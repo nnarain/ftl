@@ -1,12 +1,12 @@
 //
-// test_font.hpp
+// basic_font.hpp
 //
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Feb 15 2021
 //
 
-#ifndef FTL_GFX_FONTS_TEST_FONT_HPP
-#define FTL_GFX_FONTS_TEST_FONT_HPP
+#ifndef FTL_GFX_FONTS_BASIC_FONT_HPP
+#define FTL_GFX_FONTS_BASIC_FONT_HPP
 
 #include <ftl/gfx/font.hpp>
 
@@ -21,7 +21,7 @@ namespace fonts
 
 // https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h
 
-const uint8_t TEST_FONT_DATA[] = {
+const uint8_t BASIC_FONT_DATA[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // U+0000 (nul)
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // U+0001
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // U+0002
@@ -152,10 +152,10 @@ const uint8_t TEST_FONT_DATA[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00    // U+007F
 };
 
-const Font TEST_FONT{TEST_FONT_DATA};
+const Font BASIC_FONT{BASIC_FONT_DATA};
 
 }
 }
 }
 
-#endif // FTL_GFX_FONTS_TEST_FONT_HPP
+#endif // FTL_GFX_FONTS_BASIC_FONT_HPP

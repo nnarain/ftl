@@ -17,7 +17,7 @@
 #include <ftl/drivers/displays/ssd1306.hpp>
 #include <ftl/gfx/adaptors/ssd1306_display.hpp>
 #include <ftl/logging/adaptors/display_adaptor.hpp>
-#include <ftl/gfx/fonts/test_font.hpp>
+#include <ftl/gfx/fonts/basic_font.hpp>
 #include <ftl/platform/avr/atmega2560/hardware.hpp>
 
 #define OLED_ADDRESS 0x3C
@@ -32,7 +32,7 @@ int main()
     Hardware::I2C::initialize(ftl::comms::i2c::ClockMode::Fast);
 
     Logger<RasterDisplayLoggerAdaptor<ftl::gfx::Ssd1306Display<Hardware::I2C>>> logger{OLED_ADDRESS, DISPLAY_HEIGHT};
-    logger.getOutput().getDisplay().setFont(&ftl::gfx::fonts::TEST_FONT);
+    logger.getOutput().getDisplay().setFont(&ftl::gfx::fonts::BASIC_FONT);
 
     SystemLogger::instance().setLogger(&logger);
 
