@@ -5,22 +5,22 @@
 // @date Oct 31 2020
 //
 
-#ifndef FTL_UTILS_LOGGER_HPP
-#define FTL_UTILS_LOGGER_HPP
+#ifndef FTL_LOGGING_LOGGER_HPP
+#define FTL_LOGGING_LOGGER_HPP
 
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 
-#define LOG_DEBUG(msg, ...) ftl::utils::SystemLogger::instance().getLogger()->log("[DEBUG] " msg "\n\r", ##__VA_ARGS__)
-#define LOG_INFO(msg, ...)  ftl::utils::SystemLogger::instance().getLogger()->log("[INFO ] " msg "\n\r", ##__VA_ARGS__)
-#define LOG_WARN(msg, ...)  ftl::utils::SystemLogger::instance().getLogger()->log("[WARN ] " msg "\n\r", ##__VA_ARGS__)
-#define LOG_ERROR(msg, ...) ftl::utils::SystemLogger::instance().getLogger()->log("[ERROR] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_DEBUG(msg, ...) ftl::logging::SystemLogger::instance().getLogger()->log("[DEBUG] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_INFO(msg, ...)  ftl::logging::SystemLogger::instance().getLogger()->log("[INFO ] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_WARN(msg, ...)  ftl::logging::SystemLogger::instance().getLogger()->log("[WARN ] " msg "\n\r", ##__VA_ARGS__)
+#define LOG_ERROR(msg, ...) ftl::logging::SystemLogger::instance().getLogger()->log("[ERROR] " msg "\n\r", ##__VA_ARGS__)
 
 
 namespace ftl
 {
-namespace utils
+namespace logging
 {
     class LoggerBase
     {
@@ -28,13 +28,13 @@ namespace utils
         virtual void log(const char* fmt, ...) = 0;
     };
 
-    template<typename ByteStreamT, unsigned long L = 256>
+    template<typename LoggerOutputT, unsigned long L = 256>
     class Logger : public LoggerBase
     {
     public:
         template<typename... Args>
         Logger(Args... args)
-            : stream_(args...)
+            : output_(args...)
         {
         }
 
@@ -49,13 +49,18 @@ namespace utils
             vsnprintf(msg, L, fmt, args);
             va_end(args);
 
-            const auto len = strlen(msg);
+            // const auto len = strlen(msg);
 
-            stream_.write(reinterpret_cast<const uint8_t*>(&msg[0]), len);
+            output_.write(reinterpret_cast<const char*>(&msg[0]));
+        }
+
+        LoggerOutputT& getOutput()
+        {
+            return output_;
         }
 
     private:
-        ByteStreamT stream_;
+        LoggerOutputT output_;
     };
 
     // TODO remove?

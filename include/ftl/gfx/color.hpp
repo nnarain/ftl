@@ -20,7 +20,11 @@ namespace gfx
         {
         }
 
-        Color() : Color{0, 0, 0}
+        Color(uint8_t v) : Color{v, v, v}
+        {
+        }
+
+        Color() : Color{0}
         {
         }
 

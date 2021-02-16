@@ -8,6 +8,8 @@
 #define FTL_GFX_DISPLAY_HPP
 
 #include <ftl/gfx/color.hpp>
+#include <ftl/memory/memreader.hpp>
+#include <ftl/gfx/font.hpp>
 
 // FIXME: Can I assume this header exists?
 #include <stdlib.h>
@@ -21,10 +23,19 @@ namespace gfx
      * 
      * Implementors must provide a method of setting a single pixel and a method to update the display.
      * All other functions can be overridden for display specific optimizations.
+     * 
+     * GfxDataReader - Because graphics data may be stored in a variety of ways on an embedded platform, provide a method
+     *                 for different targets to override how data is read (e.g. from flash)
     */
+    template<class GfxDataReader = memory::DefaultMemoryReader>
     class RasterDisplay
     {
     public:
+        RasterDisplay(unsigned int width, unsigned int height)
+            : width_{width}, height_{height}
+        {
+        }
+
         /**
          * Set a pixel in the display
         */
@@ -150,7 +161,7 @@ namespace gfx
                     {
                         // New byte
                         // Skip bytes until the current row + byte offset for columns (1 bit per column pixel)
-                        byte = bitmap[j * bytes_per_row + i / 8];
+                        byte = gfx_reader_(bitmap, j * bytes_per_row + i / 8);
                     }
 
                     if (byte & 0x01)
@@ -161,7 +172,86 @@ namespace gfx
             }
         }
 
+        /**
+         * Draw a string
+        */
+        void drawString(const char* str, int x, int y, const gfx::Color& color)
+        {
+            while(*str)
+            {
+                const char c = *str++;
+
+                if (c == '\n')
+                {
+                    // Next line
+                    x = 0;
+                    y = (y + font_->height()) % height_;
+                }
+                else if (c == '\r')
+                {
+                    // Return to start of line
+                    x = 0;
+                    y = 0;
+                }
+                else
+                {
+                    drawChar(c, x, y, color);
+                    x += font_->width();
+                }
+            }
+        }
+
+        /**
+         * Draw a single character from the set font (A font must be set!)
+        */
+        void drawChar(const char c, int x, int y, const gfx::Color& color)
+        {
+            if (!font_) return;
+
+            for (auto i = 0; i < font_->width(); ++i)
+            {
+                for (auto j = 0; j < font_->height(); ++j)
+                {
+                    if (font_->at(c, i, j, gfx_reader_))
+                    {
+                        drawPixel(x + i, y + j, color);
+                    }
+                    else
+                    {
+                        drawPixel(x + i, y + j, gfx::Color::black());
+                    }
+                }
+            }
+        }
+
+        /**
+         * Set the font the display uses
+        */
+        void setFont(const Font* font)
+        {
+            font_ = font;
+        }
+
+        unsigned int width() const
+        {
+            return width_;
+        }
+
+        unsigned int height() const
+        {
+            return height_;
+        }
+
+        const Font* font() const
+        {
+            return font_;
+        }
+
     private:
+        GfxDataReader gfx_reader_;
+        const Font* font_{nullptr};
+        unsigned int width_;
+        unsigned int height_;
     };
 }
 }
