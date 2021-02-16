@@ -47,7 +47,7 @@ int main()
 
 
     display.clear();
-    display.drawString("Hello!", 0, 5, ftl::gfx::Color::white());
+    display.drawString("Hello World!!!", 0, 5, ftl::gfx::Color::white());
     display.update();
 
     // Enable hardware scrolling
@@ -57,6 +57,8 @@ int main()
 
     for(;;)
     {
+        LOG_INFO("hello");
+        _delay_ms(1000);
     }
 
     return 0;

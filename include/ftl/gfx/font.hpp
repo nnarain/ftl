@@ -8,6 +8,7 @@
 #ifndef FTL_GFX_FONT_HPP
 #define FTL_GFX_FONT_HPP
 
+// #include <ftl/gfx/color.hpp>
 #include <stdint.h>
 
 namespace ftl
@@ -15,54 +16,44 @@ namespace ftl
 namespace gfx
 {
 /**
- * A single graphical representation within the font
-*/
-struct Glyph
-{
-    const uint8_t* source;
-    unsigned int offset;
-    unsigned int width;
-    unsigned int height;
-
-    template<typename DataReader>
-    bool at(unsigned int x, unsigned int y, const DataReader& reader) const
-    {
-        const uint8_t data = reader(source, offset + y);
-        return (data & (0x80 >> x));
-    }
-};
-
-/**
- * A collections of glyphs
+ * Handle Font data
+ * 
+ * Currently this assumes 8x8 tiles
 */
 class Font
 {
-    static constexpr uint8_t ASCII_START = 32;
-    static constexpr uint8_t ASCII_END = 127;
-
 public:
-    Font(const Glyph* glyphs)
-        : glyphs_{glyphs}
+    Font(const uint8_t* data)
+        : font_data_{data}
     {
     }
 
-    const Glyph* glyph(char c) const
+    /**
+     * Return if the pixel at the specified location in the glyph
+    */
+    template<typename DataReader>
+    bool at(char c, unsigned int x, unsigned int y, const DataReader& reader) const
     {
-        if (!glyphs_) return nullptr;
+        if (!font_data_) return false;
 
-        if (c >= ASCII_START && c <= ASCII_END)
-        {
-            // return &glyphs_[c - ASCII_START];
-            return &glyphs_[0];
-        }
-        else
-        {
-            return nullptr;
-        }
+        const auto offset = (unsigned int)c * 8;
+        const uint8_t data = reader(font_data_, offset + y);
+
+        return !!(data & (1 << x));
+    }
+
+    unsigned int width() const
+    {
+        return 8;
+    }
+
+    unsigned int height() const
+    {
+        return 8;
     }
 
 private:
-    const Glyph* glyphs_{nullptr};
+    const uint8_t* font_data_{nullptr};
 };
 }
 }

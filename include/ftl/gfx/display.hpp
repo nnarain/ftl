@@ -156,7 +156,6 @@ namespace gfx
                     {
                         // New byte
                         // Skip bytes until the current row + byte offset for columns (1 bit per column pixel)
-                        // byte = bitmap[j * bytes_per_row + i / 8];
                         byte = gfx_reader_(bitmap, j * bytes_per_row + i / 8);
                     }
 
@@ -204,25 +203,14 @@ namespace gfx
         {
             if (font_)
             {
-                const auto glyph = font_->glyph(c);
-                drawGlyph(glyph, x, y, color);
-            }
-        }
-
-        /**
-         * Draw a glyph
-        */
-        void drawGlyph(const Glyph* glyph, int x, int y, const gfx::Color& color)
-        {
-            if (!glyph) return;
-
-            for (auto i = 0; i < glyph->width; ++i)
-            {
-                for (auto j = 0; j < glyph->height; ++j)
+                for (auto i = 0; i < font_->width(); ++i)
                 {
-                    if (glyph->at(i, j, gfx_reader_))
+                    for (auto j = 0; j < font_->height(); ++j)
                     {
-                        drawPixel(x + i, y + j, color);
+                        if (font_->at(c, i, j, gfx_reader_))
+                        {
+                            drawPixel(x + i, y + j, color);
+                        }
                     }
                 }
             }
