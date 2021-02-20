@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include <ftl/logging/logger.hpp>
+#include <ftl/comms/uart.hpp>
 #include <ftl/comms/i2c/i2c_device.hpp>
 #include <ftl/platform/avr/atmega2560/hardware.hpp>
 
@@ -30,7 +31,7 @@ using namespace ftl::platform::avr::atmega2560;
 
 int main()
 {
-    Logger<Hardware::Uart0> logger{Baud::Rate_9600};
+    Logger<Hardware::UART0> logger{ftl::comms::uart::BaudRate::Rate_9600};
     SystemLogger::instance().setLogger(&logger);
 
     Hardware::I2C::initialize(ftl::comms::i2c::ClockMode::Fast);

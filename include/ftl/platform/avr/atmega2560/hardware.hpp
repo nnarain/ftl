@@ -33,10 +33,10 @@ namespace atmega2560
         using GpioD = HardwareGpio<0x09>;
 
         /* UART */
-        using Uart0 = HardwareUart<0xC0>;
-        using Uart1 = HardwareUart<0xC8>;
-        using Uart2 = HardwareUart<0xD0>;
-        using Uart3 = HardwareUart<0x130>;
+        using UART0 = HardwareUART0;
+        using UART1 = HardwareUART1;
+        using UART2 = HardwareUART2;
+        using UART3 = HardwareUART3;
 
         /* I2C / 2-Wire */
         using I2C = HardwareI2C;
