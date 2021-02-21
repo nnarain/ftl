@@ -1,5 +1,5 @@
 //
-// platform/avr/atmega2560/i2c.hpp
+// platform/avr/interfaces/i2c.hpp
 //
 // @author Natesh Narain <nnaraindev@gmail.com>
 // @date Oct 31 2020

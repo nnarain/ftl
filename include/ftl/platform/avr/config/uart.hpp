@@ -11,6 +11,7 @@
 #define FTL_PLATFORM_AVR_CONFIG_UART_HPP
 
 #include <ftl/utils/bitutil.hpp>
+#include <ftl/comms/uart.hpp>
 #include <ftl/platform/avr/utils/setbaud.hpp>
 
 #include "reg_cat.hpp"

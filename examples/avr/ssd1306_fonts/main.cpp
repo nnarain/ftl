@@ -21,7 +21,7 @@
 #include <ftl/platform/avr/atmega2560/hardware.hpp>
 
 #define OLED_ADDRESS 0x3C
-#define DISPLAY_HEIGHT 32
+#define DISPLAY_HEIGHT 64
 
 using namespace ftl::drivers;
 using namespace ftl::logging;

@@ -9,6 +9,7 @@
 #define FTL_PLATFORM_AVR_ATMEGA32U4_HPP
 
 #include "uart.hpp"
+#include <ftl/platform/avr/interfaces/i2c.hpp>
 
 namespace ftl
 {
@@ -23,7 +24,11 @@ namespace atmega32u4
     */
     struct Hardware
     {
+        /* UART */
         using UART1 = HardwareUART1;
+
+        /* I2C / 2-wire */
+        using I2C0 = HardwareI2C;
     };
 }
 }
