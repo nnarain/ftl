@@ -11,23 +11,40 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <ftl/comms/uart.hpp>
 #include <ftl/logging/logger.hpp>
+#include <ftl/comms/i2c/i2c_device.hpp>
+
+#include <ftl/drivers/displays/ssd1306.hpp>
+#include <ftl/gfx/adaptors/ssd1306_display.hpp>
+#include <ftl/logging/adaptors/display_adaptor.hpp>
+#include <ftl/gfx/fonts/basic_font.hpp>
 #include <ftl/platform/avr/atmega32u4/hardware.hpp>
 
+#define OLED_ADDRESS 0x3C
+#define DISPLAY_HEIGHT 64
+
+using namespace ftl::drivers;
 using namespace ftl::logging;
 using namespace ftl::platform::avr::atmega32u4;
 
 int main()
 {
-    Logger<Hardware::UART1> logger{ftl::comms::uart::BaudRate::Rate_9600};
+    Hardware::I2C0::initialize(ftl::comms::i2c::ClockMode::Fast);
+
+    Logger<RasterDisplayLoggerAdaptor<ftl::gfx::Ssd1306Display<Hardware::I2C0>>> logger{OLED_ADDRESS, DISPLAY_HEIGHT};
+    logger.getOutput().getDisplay().setFont(&ftl::gfx::fonts::BASIC_FONT);
+
     SystemLogger::instance().setLogger(&logger);
+
+    int count = 0;
 
     for(;;)
     {
-        LOG_INFO("Hello ATmega32u4!");
+        LOG_INFO("%d", count);
+        count++;
         _delay_ms(1000);
     }
 
     return 0;
 }
+
