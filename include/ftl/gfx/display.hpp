@@ -36,6 +36,8 @@ namespace gfx
         {
         }
 
+        ~RasterDisplay() = default;
+
         /**
          * Set a pixel in the display
         */

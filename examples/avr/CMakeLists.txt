@@ -1,5 +1,6 @@
 # Device bringup
 add_subdirectory(atmega32u4_bringup)
+add_subdirectory(atmega328p_bringup)
 
 # Temperature sensors
 add_subdirectory(mcp9600)
