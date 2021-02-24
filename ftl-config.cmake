@@ -10,7 +10,7 @@
 
 set(FTL_SOURCES)
 
-set(FTL_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include")
+set(FTL_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include;${CMAKE_CURRENT_LIST_DIR}/include/ftl/lib")
 
 foreach(component ${ftl_FIND_COMPONENTS})
     # Include the components config script

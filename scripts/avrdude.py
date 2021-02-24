@@ -12,6 +12,24 @@ import serial
 
 USB_RESET_REQUIRED = ['atmega32u4']
 
+BOARDS = {
+    'mega': {
+        'mcu': 'atmega2560',
+        'programmer': 'wiring',
+        'usb_reset': False
+    },
+    'uno': {
+        'mcu': 'atmega328p',
+        'programmer': 'arduino',
+        'usb_reset': False
+    },
+    'promicro': {
+        'mcu': 'atmega32u4',
+        'programmer': 'avr109',
+        'usb_reset': True
+    }
+}
+
 def main(args):
     hex_file = find_matching_hex_file(args["project"], args["mcu"], args["search_root"])
 
@@ -21,8 +39,6 @@ def main(args):
 
     try:
         if args['mcu'] in USB_RESET_REQUIRED and not args['user_override']:
-            # Set programmer to avr109
-            args.update({'programmer': 'avr109'})
             # Some boards need to be reset to enter the bootloader
             flash_method_usb_reset(args, hex_file)
         else:
@@ -124,16 +140,37 @@ def usb_reset(port):
     except Exception as e:
         print(f'Error resetting USB device: {e}')
 
+
+def process_args(args):
+    out_args = dict(args)
+
+    if args['board'] and (args['mcu'] or args['programmer']):
+        raise RuntimeError('Specific either board or mcu, not both')
+
+    if args['board']:
+        board = args['board']
+        try:
+            config = BOARDS[board]
+            out_args.update(config)
+        except KeyError:
+            raise RuntimeError(f'Could not find configuration for {board}')
+    elif not args['mcu'] and not args['programmer']:
+        raise RuntimeError('Both mcu and programmer must be specified together')
+
+    return out_args
+
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('project')
-    parser.add_argument('-m', '--mcu', required=True, help='processor')
-    parser.add_argument('-c', '--programmer', default='wiring', help='Programmer type')
+    parser.add_argument('-B', '--board', required=False, choices=list(BOARDS.keys()), help='Dev board type')
+    parser.add_argument('-m', '--mcu', required=False, help='processor')
+    parser.add_argument('-c', '--programmer', required=False, help='Programmer type')
     parser.add_argument('-p', '--port', required=True, help='Serial port')
     parser.add_argument('-b', '--baud', default=115200, type=int, help='Baud rate')
     parser.add_argument('-s', '--search-root', default='.', help='Starting search path to find hex files')
     parser.add_argument('-o', '--user-override', default=False, action='store_true', help='Auto reset override')
 
     args = vars(parser.parse_args())
+    args = process_args(args)
 
     main(args)

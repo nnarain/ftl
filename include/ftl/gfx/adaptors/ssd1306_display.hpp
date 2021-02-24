@@ -39,7 +39,6 @@ public:
         : RasterDisplay<GfxReader>{NUM_COLUMNS, height}
         , driver_{i2c_address, height}
     {
-        clear();
     }
 
     /**
@@ -49,6 +48,8 @@ public:
         : Ssd1306Display{i2c_address, 64}
     {
     }
+
+    ~Ssd1306Display() = default;
 
     bool initialize(bool com_reverse = true)
     {

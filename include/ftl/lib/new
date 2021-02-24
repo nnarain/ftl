@@ -1,0 +1,12 @@
+//
+// lib/new
+//
+// @author Natesh Narain <nnaraindev@gmail.com>
+// @date Feb 21 2021
+//
+#ifndef FTL_LIB_NEW
+#define FTL_LIB_NEW
+
+#include "new.hpp"
+
+#endif // FTL_LIB_NEW
