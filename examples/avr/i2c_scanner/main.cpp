@@ -5,9 +5,6 @@
 // @date Nov 22 2020
 //
 
-#include <avr/io.h>
-#include <util/delay.h>
-
 #include <stdint.h>
 #include <stdio.h>
 
@@ -48,7 +45,7 @@ int main()
 
         address += 2;
 
-        _delay_ms(10);
+        Hardware::Timer::delayMs(10);
     }
 
     return 0;

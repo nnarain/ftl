@@ -5,9 +5,6 @@
 // @date Nov 21 2020
 //
 
-#include <avr/io.h>
-#include <util/delay.h>
-
 #include <stdint.h>
 #include <stdio.h>
 
@@ -50,7 +47,7 @@ int main()
 
         LOG_INFO("Temperature: %0.2f", temp);
 
-        _delay_ms(1000);
+        Hardware::Timer::delayMs(1000);
     }
 
     return 0;

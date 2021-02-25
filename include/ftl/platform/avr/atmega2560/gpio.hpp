@@ -7,6 +7,8 @@
 #ifndef FTL_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
 #define FTL_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
 
+#include <avr/io.h>
+
 #include <stdint.h>
 
 #include <ftl/utils/bitutil.hpp>

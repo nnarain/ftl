@@ -5,9 +5,6 @@
 // @date Nov 21 2020
 //
 
-#include <avr/io.h>
-#include <util/delay.h>
-
 #include <stdint.h>
 #include <stdio.h>
 
@@ -45,7 +42,6 @@ int main()
     {
         LOG_ERROR("Failed to initialized OLED display!");
     }
-
 
     display.clear();
     display.drawXBitmap(dino_bits, 0, 20, dino_width, dino_height, ftl::gfx::Color::white());
