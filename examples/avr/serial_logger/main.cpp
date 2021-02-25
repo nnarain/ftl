@@ -10,7 +10,6 @@
 
 #include <ftl/comms/uart.hpp>
 #include <ftl/logging/logger.hpp>
-#include <ftl/platform/avr/interfaces/timer.hpp>
 
 #include <ftl/platform/platform.hpp>
 
