@@ -117,9 +117,9 @@ def run_cmd(cmd):
     return avrdude_process.communicate()
 
 def find_matching_hex_file(project_name, mcu, search_root):
-    for parent, dirs, files in os.walk(search_root):
+    for parent, _, files in os.walk(search_root):
         for f in files:
-            if re.match(f'{project_name}-{mcu}.*\.hex', f):
+            if re.match(f'{project_name}-{mcu}-{mcu}.*\.hex', f):
                 return os.path.join(parent, f)
     return None
 

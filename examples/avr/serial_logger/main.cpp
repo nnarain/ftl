@@ -12,10 +12,10 @@
 #include <ftl/logging/logger.hpp>
 #include <ftl/platform/avr/interfaces/timer.hpp>
 
-#include <ftl/platform/avr/atmega328p/hardware.hpp>
+#include <ftl/platform/platform.hpp>
 
 using namespace ftl::logging;
-using namespace ftl::platform::avr::atmega328p;
+using namespace ftl::platform;
 
 int main()
 {

@@ -40,7 +40,7 @@ namespace atmega2560
         using UART3 = HardwareUART3;
 
         /* I2C / 2-Wire */
-        using I2C = HardwareI2C;
+        using I2C0 = HardwareI2C;
 
         /* Timers */
         using Timer = AvrTimer;

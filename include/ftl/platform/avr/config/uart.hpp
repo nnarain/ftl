@@ -10,6 +10,8 @@
 #ifndef FTL_PLATFORM_AVR_CONFIG_UART_HPP
 #define FTL_PLATFORM_AVR_CONFIG_UART_HPP
 
+#include <avr/io.h>
+
 #include <ftl/utils/bitutil.hpp>
 #include <ftl/comms/uart.hpp>
 #include <ftl/platform/avr/utils/setbaud.hpp>

@@ -26,7 +26,7 @@ namespace atmega32u4
     struct Hardware
     {
         /* UART */
-        using UART1 = HardwareUART1;
+        using UART0 = HardwareUART1;
 
         /* I2C / 2-wire */
         using I2C0 = HardwareI2C;
