@@ -12,6 +12,7 @@
 #include "uart.hpp"
 
 #include <ftl/platform/avr/interfaces/i2c.hpp>
+#include <ftl/platform/avr/interfaces/timer.hpp>
 
 namespace ftl
 {
@@ -39,7 +40,10 @@ namespace atmega2560
         using UART3 = HardwareUART3;
 
         /* I2C / 2-Wire */
-        using I2C = HardwareI2C;
+        using I2C0 = HardwareI2C;
+
+        /* Timers */
+        using Timer = AvrTimer;
     };
 }
 }

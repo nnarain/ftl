@@ -5,20 +5,17 @@
 // @date Nov 21 2020
 //
 
-#include <avr/io.h>
-#include <util/delay.h>
-
 #include <stdint.h>
 #include <stdio.h>
 
-#include <ftl/logging/logger.hpp>
 #include <ftl/comms/uart.hpp>
+#include <ftl/logging/logger.hpp>
+#include <ftl/platform/avr/interfaces/timer.hpp>
 
-#include <ftl/platform/avr/atmega328p/hardware.hpp>
-
+#include <ftl/platform/platform.hpp>
 
 using namespace ftl::logging;
-using namespace ftl::platform::avr::atmega328p;
+using namespace ftl::platform;
 
 int main()
 {
@@ -30,7 +27,7 @@ int main()
     for(;;)
     {
         LOG_INFO("count: %d", count);
-        _delay_ms(1000);
+        Hardware::Timer::delayMs(1000);
 
         count++;
     }

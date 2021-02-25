@@ -1,5 +1,4 @@
-
-project(ssd1306)
+project(serial_logger)
 
 find_package(ftl COMPONENTS avr_i2c)
 

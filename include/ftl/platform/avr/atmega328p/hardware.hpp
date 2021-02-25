@@ -10,6 +10,7 @@
 #include "uart.hpp"
 
 #include <ftl/platform/avr/interfaces/i2c.hpp>
+#include <ftl/platform/avr/interfaces/timer.hpp>
 
 namespace ftl
 {
@@ -30,6 +31,9 @@ namespace atmega328p
 
         /* I2C / 2-Wire */
         using I2C0 = HardwareI2C;
+
+        /* Timer */
+        using Timer = AvrTimer;
     };
 
 } // namespace atmega328p

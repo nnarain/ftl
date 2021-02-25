@@ -1,13 +1,21 @@
-# Device bringup
-add_subdirectory(atmega32u4_bringup)
-add_subdirectory(atmega328p_bringup)
+set(FTL_PLATFORMS
+    "atmega328p"
+    "atmega2560"
+    "atmega32u4"
+)
 
-# Temperature sensors
-add_subdirectory(mcp9600)
-add_subdirectory(mcp9808)
-# Displays
-add_subdirectory(ssd1306)
-add_subdirectory(ssd1306_fonts)
+set(FTL_EXAMPLES
+    "serial_logger"
+    "i2c_scanner"
+    "mcp9600"
+    "mcp9808"
+    "ssd1306"
+    "ssd1306_fonts"
+)
 
 # Generic
-add_subdirectory(i2c_scanner)
+foreach(FTL_PLATFORM ${FTL_PLATFORMS})
+    foreach(example ${FTL_EXAMPLES})
+        add_subdirectory(${example} ${FTL_PLATFORM}-${example})
+    endforeach(example ${FTL_EXAMPLES})
+endforeach(FTL_PLATFORM ${FTL_PLATFORMS})

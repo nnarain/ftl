@@ -5,42 +5,32 @@
 // @date Nov 21 2020
 //
 
-#include <avr/io.h>
-#include <util/delay.h>
-
 #include <stdint.h>
 #include <stdio.h>
 
 #include <ftl/logging/logger.hpp>
 #include <ftl/comms/uart.hpp>
 #include <ftl/comms/i2c/i2c_device.hpp>
-#include <ftl/platform/avr/atmega2560/hardware.hpp>
-
 #include <ftl/drivers/sensors/mcp9600.hpp>
+
+#include <ftl/platform/platform.hpp>
 
 #define MCP9600_ADDRESS 0x67
 
 using namespace ftl::drivers;
 using namespace ftl::logging;
-using namespace ftl::platform::avr::atmega2560;
+using namespace ftl::platform;
 
 int main()
 {
     Logger<Hardware::UART0> logger{ftl::comms::uart::BaudRate::Rate_9600};
     SystemLogger::instance().setLogger(&logger);
 
-    // Arduino Mega - Pullup SDA, SCL
-    Hardware::GpioD::OutputPin<0> scl_pullup;
-    Hardware::GpioD::OutputPin<1> sda_pullup;
-
-    sda_pullup.set();
-    scl_pullup.set();
-
     LOG_INFO("Initialize I2C");
 
-    Hardware::I2C::initialize();
+    Hardware::I2C0::initialize();
 
-    sensors::Mcp9600<Hardware::I2C> mcp{MCP9600_ADDRESS};
+    sensors::Mcp9600<Hardware::I2C0> mcp{MCP9600_ADDRESS};
 
     if (mcp.verify())
     {
@@ -62,7 +52,7 @@ int main()
         LOG_INFO("ADC:   %X -> %d", adc, adc);
         LOG_INFO("Type: %d", static_cast<uint8_t>(type));
 
-        _delay_ms(1000);
+        Hardware::Timer::delayMs(1000);
     }
 
     return 0;
