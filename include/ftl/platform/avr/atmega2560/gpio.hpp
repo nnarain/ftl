@@ -8,10 +8,7 @@
 #define FTL_PLATFORM_AVR_ATMEGA2560_GPIO_HPP
 
 #include <avr/io.h>
-
-#include <stdint.h>
-
-#include <ftl/utils/bitutil.hpp>
+#include <ftl/platform/avr/config/gpio.hpp>
 
 namespace ftl
 {
@@ -21,51 +18,17 @@ namespace avr
 {
 namespace atmega2560
 {
-    template<uint16_t GPIO_BASE_ADDR>
-    struct HardwareGpio
-    {
-        static constexpr uint16_t INPUT_ADDR = GPIO_BASE_ADDR;
-        static constexpr uint16_t DDR_ADDR = GPIO_BASE_ADDR + 1;
-        static constexpr uint16_t OUTPUT_ADDR = GPIO_BASE_ADDR + 2;
-
-        template<uint8_t PIN>
-        struct OutputPin
-        {
-            OutputPin()
-            {
-                SET_BIT(_SFR_IO8(DDR_ADDR), PIN);
-            }
-
-            void set()
-            {
-                SET_BIT(_SFR_IO8(OUTPUT_ADDR), PIN);
-            }
-
-            void reset()
-            {
-                CLR_BIT(_SFR_IO8(OUTPUT_ADDR), PIN);
-            }
-
-            void toggle()
-            {
-                TGL_BIT(_SFR_IO8(OUTPUT_ADDR), PIN);
-            }
-        };
-
-        template<uint8_t PIN>
-        struct InputPin
-        {
-            InputPin()
-            {
-                CLR_BIT(_SFR_IO8(DDR_ADDR), PIN);
-            }
-
-            bool read() const
-            {
-                return IS_BIT_SET(_SFR_IO8(INPUT_ADDR), PIN);
-            }
-        };
-    };
+    GPIO_CONFIG(HardwareGPIOA, A);
+    GPIO_CONFIG(HardwareGPIOB, B);
+    GPIO_CONFIG(HardwareGPIOC, C);
+    GPIO_CONFIG(HardwareGPIOD, D);
+    GPIO_CONFIG(HardwareGPIOE, E);
+    GPIO_CONFIG(HardwareGPIOF, F);
+    GPIO_CONFIG(HardwareGPIOG, G);
+    GPIO_CONFIG(HardwareGPIOH, H);
+    GPIO_CONFIG(HardwareGPIOJ, J);
+    GPIO_CONFIG(HardwareGPIOK, K);
+    GPIO_CONFIG(HardwareGPIOL, L);
 }
 }
 }
