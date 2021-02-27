@@ -28,10 +28,17 @@ namespace atmega2560
     struct Hardware
     {
         /* General Purpose IO */
-        using GpioA = HardwareGpio<0x00>;
-        using GpioB = HardwareGpio<0x03>;
-        using GpioC = HardwareGpio<0x06>;
-        using GpioD = HardwareGpio<0x09>;
+        template<unsigned int PIN> using GPIOA = HardwareGPIOA<PIN>;
+        template<unsigned int PIN> using GPIOB = HardwareGPIOB<PIN>;
+        template<unsigned int PIN> using GPIOC = HardwareGPIOC<PIN>;
+        template<unsigned int PIN> using GPIOD = HardwareGPIOD<PIN>;
+        template<unsigned int PIN> using GPIOE = HardwareGPIOE<PIN>;
+        template<unsigned int PIN> using GPIOF = HardwareGPIOF<PIN>;
+        template<unsigned int PIN> using GPIOG = HardwareGPIOG<PIN>;
+        template<unsigned int PIN> using GPIOH = HardwareGPIOH<PIN>;
+        template<unsigned int PIN> using GPIOJ = HardwareGPIOJ<PIN>;
+        template<unsigned int PIN> using GPIOK = HardwareGPIOK<PIN>;
+        template<unsigned int PIN> using GPIOL = HardwareGPIOL<PIN>;
 
         /* UART */
         using UART0 = HardwareUART0;
