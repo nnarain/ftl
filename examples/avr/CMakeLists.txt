@@ -11,6 +11,7 @@ set(FTL_EXAMPLES
     "mcp9808"
     "ssd1306"
     "ssd1306_fonts"
+    "pca9685"
 )
 
 # Generic

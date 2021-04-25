@@ -29,8 +29,8 @@
 // #define I2C_STOP_CONDITION BV(TWSTO)
 // // I2C
 
-// TODO Remove
-#define SCL 100000UL
+// FIXME: Remove
+#include <ftl/logging/logger.hpp>
 
 namespace ftl
 {
@@ -54,8 +54,8 @@ namespace i2c
 
         TWCR = BV(TWEN);
 
-        CLR_BIT(TWSR, 0);
-        CLR_BIT(TWSR, 1);
+        // CLR_BIT(TWSR, 0);
+        // CLR_BIT(TWSR, 1);
 
         // TODO(nnarain): Interrupt driven?
         // I2C_ENABLE_ISR();
