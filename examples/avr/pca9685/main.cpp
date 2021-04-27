@@ -38,8 +38,25 @@ int main()
         LOG_ERROR("PWM controller failed to initialize");
     }
 
+    // Set to 50Hz
+    LOG_INFO("Setting freq to 50Hz");
+    pwm.setFrequency(50.0f);
+
+    const auto prescale = pwm.getPrescale();
+    LOG_INFO("prescale: %d", prescale);
+
+    LOG_INFO("Enabling PWM controller");
+    pwm.enable(true);
+    Hardware::Timer::delayMs(1);
+
     for(;;)
     {
+        for (auto i = 0; i < 11; ++i)
+        {
+            float duty = (float)i * 0.1f;
+            pwm.setDutyCycle(0, duty);
+            Hardware::Timer::delayMs(100);
+        }
         Hardware::Timer::delayMs(1000);
     }
 

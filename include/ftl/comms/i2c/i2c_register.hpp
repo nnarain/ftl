@@ -167,9 +167,19 @@ public:
         reg_.template writeBits<DataT>(data, mask, shift);
     }
 
+    void writeBit(const DataT data, const uint8_t bit)
+    {
+        writeBits(data, 0x01, bit);
+    }
+
     DataT readBits(DataT mask, uint8_t shift)
     {
         return reg_.template readBits<DataT>(mask, shift);
+    }
+
+    DataT readBit(uint8_t bit)
+    {
+        return readBits(0x01, bit);
     }
 
 private:
