@@ -42,15 +42,16 @@ int main()
     LOG_INFO("Setting freq to 50Hz");
     pwm.setFrequency(50.0f);
 
-    const auto prescale = pwm.getPrescale();
-    LOG_INFO("prescale: %d", prescale);
+
 
     LOG_INFO("Enabling PWM controller");
     pwm.enable(true);
-    Hardware::Timer::delayMs(1);
 
     for(;;)
     {
+        const auto prescale = pwm.getPrescale();
+        LOG_INFO("prescale: %d", prescale);
+
         for (auto i = 0; i < 11; ++i)
         {
             float duty = (float)i * 0.1f;
