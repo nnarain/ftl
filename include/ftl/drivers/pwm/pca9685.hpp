@@ -263,6 +263,23 @@ public:
         return led_off.read();
     }
 
+    /**
+     * Set always ON/OFF bit
+     */
+    void setState(uint8_t channel, bool state)
+    {
+        if (state)
+        {
+            // Sets the 4th bit in the LED_ON_H register
+            setPWM(channel, 4096, 0);
+        }
+        else
+        {
+            // Clears the 4th bit in the LED_ON_H register
+            setPWM(channel, 0, 0);
+        }
+    }
+
 private:
     comms::i2c::I2CDevice<I2C> device_;
     // Oscillator frequency
