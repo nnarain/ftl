@@ -59,9 +59,9 @@ int main()
         // }
 
         // ON/OFF example
-        pwm.setState(0, true);
+        pwm.setPinState(0, true);
         Hardware::Timer::delayMs(1000);
-        pwm.setState(0, false);
+        pwm.setPinState(0, false);
         Hardware::Timer::delayMs(1000);
     }
 

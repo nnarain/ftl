@@ -5,6 +5,7 @@ set(FTL_PLATFORMS
 )
 
 set(FTL_EXAMPLES
+    "motor_shield"
     "serial_logger"
     "i2c_scanner"
     "mcp9600"
