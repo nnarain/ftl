@@ -208,20 +208,6 @@ public:
     }
 
     /**
-     * Set the desired duty cycle on the specified channel. This sets the start time to 0 (immediate)
-     */
-    void setDutyCycle(uint8_t channel, float duty)
-    {
-        if (duty > 1.0)
-        {
-            duty = 1.0;
-        }
-
-        const auto steps = (static_cast<float>(MAX_STEPS) - 1) * duty;
-        setPWM(channel, 0, steps);
-    }
-
-    /**
      * Set the ON and OFF values in their corresponding registers
      */
     void setPWM(uint8_t channel, uint16_t on, uint16_t off)
@@ -263,10 +249,15 @@ public:
         return led_off.read();
     }
 
-    /**
-     * Set always ON/OFF bit
-     */
-    void setState(uint8_t channel, bool state)
+    ///=================================================================================================================
+    /// HAL Interfaces
+    ///=================================================================================================================
+
+    ///-----------------------------------------------------------------------------------------------------------------
+    /// GPIO Group Interface
+    ///-----------------------------------------------------------------------------------------------------------------
+
+    void setPinState(uint8_t channel, bool state)
     {
         if (state)
         {
@@ -278,6 +269,30 @@ public:
             // Clears the 4th bit in the LED_ON_H register
             setPWM(channel, 0, 0);
         }
+    }
+
+    ///-----------------------------------------------------------------------------------------------------------------
+    /// PWM Group Interface
+    ///-----------------------------------------------------------------------------------------------------------------
+
+    void setFrequency(uint8_t, float freq)
+    {
+        // Cannot set frequency per channel
+        setFrequency(freq);
+    }
+
+    /**
+     * Set the desired duty cycle on the specified channel. This sets the start time to 0 (immediate)
+     */
+    void setDutyCycle(uint8_t channel, float duty)
+    {
+        if (duty > 1.0)
+        {
+            duty = 1.0;
+        }
+
+        const auto steps = (static_cast<float>(MAX_STEPS) - 1) * duty;
+        setPWM(channel, 0, steps);
     }
 
 private:
