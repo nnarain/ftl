@@ -12,6 +12,10 @@
 
 namespace ftl
 {
+unsigned int timerOverflow();
+void resetTimerOverflow();
+// void enableTimerOverflowInterrupt();
+
 namespace platform
 {
 namespace avr
@@ -25,6 +29,11 @@ struct AvrTimer
     static void delayMs(unsigned int ms)
     {
         _delay_ms(ms);
+    }
+
+    static void delayUs(unsigned int us)
+    {
+        _delay_us(us);
     }
 };
 
