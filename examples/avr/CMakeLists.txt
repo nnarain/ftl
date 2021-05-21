@@ -1,7 +1,8 @@
 set(FTL_PLATFORMS
     "atmega328p"
-    "atmega2560"
-    "atmega32u4"
+# FIXME: Should probably build out an explicit matrix of supported examples for each given platform.
+#    "atmega2560"
+#    "atmega32u4"
 )
 
 set(FTL_EXAMPLES
@@ -14,6 +15,7 @@ set(FTL_EXAMPLES
     "ssd1306_fonts"
     "pca9685"
     "pca9685_servo"
+    "hcsr04"
 )
 
 # Generic

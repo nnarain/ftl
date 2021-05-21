@@ -8,6 +8,8 @@
 #define FTL_PLATFORM_AVR_ATMEGA328P_HARDWARE_HPP
 
 #include "uart.hpp"
+#include "gpio.hpp"
+#include "input_capture.hpp"
 
 #include <ftl/platform/avr/interfaces/i2c.hpp>
 #include <ftl/platform/avr/interfaces/timer.hpp>
@@ -26,6 +28,11 @@ namespace atmega328p
     */
     struct Hardware
     {
+        /* General Purpose IO */
+        template<unsigned int PIN> using GPIOB = HardwareGPIOB<PIN>;
+        template<unsigned int PIN> using GPIOC = HardwareGPIOC<PIN>;
+        template<unsigned int PIN> using GPIOD = HardwareGPIOD<PIN>;
+
         /* UART */
         using UART0 = HardwareUART0;
 
@@ -34,6 +41,9 @@ namespace atmega328p
 
         /* Timer */
         using Timer = AvrTimer;
+
+        /* Input capture */
+        using InputCapture1 = HardwareInputCapture1;
     };
 
 } // namespace atmega328p
