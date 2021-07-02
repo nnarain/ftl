@@ -1,0 +1,27 @@
+{
+    "name": "ftl",
+    "version": "0.1.0",
+    "description": "Platform independent drivers",
+    "keywords": "drivers",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/nnarain/ftl.git"
+    },
+    "authors":
+    [
+      {
+        "name": "Natesh Narain",
+        "email": "nnaraindev@gmail.com",
+        "url": "https://github.com/nnarain",
+        "maintainer": true
+      }
+    ],
+    "license": "MIT",
+    "frameworks": "*",
+    "platforms": "*",
+
+    "build": {
+        "srcFilter": ["-<src/>"]
+    }
+}
