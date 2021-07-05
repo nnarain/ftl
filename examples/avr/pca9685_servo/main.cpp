@@ -36,6 +36,7 @@ int main()
 
     // Put device to sleep explicitly
     servo.getPwm().getDriver().enable(false);
+    servo.getPwm().getDriver().setOutputDrive(true);
     Hardware::Timer::delayMs(1);
 
     if (servo.initialize())

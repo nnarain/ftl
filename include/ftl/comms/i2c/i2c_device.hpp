@@ -36,31 +36,33 @@ namespace i2c
         */
         bool begin(SlaMode mode)
         {
-            // Send a start condition
-            i2c_.start();
+            // // Send a start condition
+            // i2c_.start();
 
-            State state = i2c_.status();
+            // State state = i2c_.status();
 
-            // Confirm we are in the START or REPEATED-START states
-            if (state != State::Start && state != State::RepeatedStart)
-            {
-                return false;
-            }
+            // // Confirm we are in the START or REPEATED-START states
+            // if (state != State::Start && state != State::RepeatedStart)
+            // {
+            //     return false;
+            // }
 
-            // Send the device address + SLA mode on the I2C bus
-            i2c_.write((address_ << 1) | static_cast<uint8_t>(mode));
+            // // Send the device address + SLA mode on the I2C bus
+            // i2c_.write((address_ << 1) | static_cast<uint8_t>(mode));
 
-            state = i2c_.status();
+            // state = i2c_.status();
 
-            // Confirm that the I2C device responded with an ACK for the address
-            if (mode == SlaMode::Write && state != State::MT_SlaveAck)
-            {
-                return false;
-            }
-            else if (mode == SlaMode::Read && state != State::MR_SlaveAck)
-            {
-                return false;
-            }
+            // // Confirm that the I2C device responded with an ACK for the address
+            // if (mode == SlaMode::Write && state != State::MT_SlaveAck)
+            // {
+            //     return false;
+            // }
+            // else if (mode == SlaMode::Read && state != State::MR_SlaveAck)
+            // {
+            //     return false;
+            // }
+
+            i2c_.begin(address_, mode);
 
             return true;
         }
