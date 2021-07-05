@@ -25,9 +25,13 @@ int main()
     Logger<Hardware::UART0> logger{ftl::comms::uart::BaudRate::Rate_9600};
     SystemLogger::instance().setLogger(&logger);
 
+    LOG_INFO("\n");
+
     Hardware::I2C0::initialize(ftl::comms::i2c::ClockMode::Fast);
 
     Pca9685<Hardware::I2C0> pwm{0x70};
+
+    LOG_INFO("Initializing PWM controller...");
 
     if (pwm.initialize())
     {
@@ -37,6 +41,8 @@ int main()
     {
         LOG_ERROR("PWM controller failed to initialize");
     }
+
+    pwm.setOutputDrive(false);
 
     // Set to 50Hz
     LOG_INFO("Setting freq to 50Hz");
